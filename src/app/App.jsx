@@ -7,6 +7,9 @@ import AppContext from '../features/context/AppContext';
 import Layout from '../widgets/layout/Layout';
 import Home from '../pages/home/Home';
 import Base64 from '../shared/base64/Base64';
+import AdminPanel from '../pages/adminPanel/AdminPanel';
+import GenresList from "../pages/genre/GenresList";
+import Genres from "../pages/genre/Genre";
 
 function App() {
   const [token, setToken] = useState(null);
@@ -31,22 +34,21 @@ function App() {
     }
   }, [token]);
 
-  const request = (url, conf) => new Promise(async (resolve, reject) => {
+const request = (url, conf) => new Promise(async (resolve, reject) => {
     try {
         if (url.startsWith('/')) {
             url = backUrl + url;
 
+            conf = conf || {};
+            conf.headers = conf.headers || {};
+
+            // Всегда добавляем JWT, если есть
             if (token) {
-                conf = conf || {};
-                conf.headers = conf.headers || {};
-                if (!conf.headers['Authorization']) {
-                    conf.headers['Authorization'] = 'Bearer ' + token;
-                }
+                conf.headers['Authorization'] = 'Bearer ' + token;
             }
         }
 
         const response = await fetch(url, conf);
-
         const contentType = response.headers.get('content-type') || '';
         const text = await response.text(); 
 
@@ -74,13 +76,15 @@ function App() {
 });
 
 
+
   return (
     <AppContext.Provider value={{ request, backUrl, user, setToken }}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="admin" element={user?.role === "Admin" ? <Admin /> : <Home />} />
+             <Route path="admin" element={user?.role === "Admin" ? <AdminPanel /> : <Home />} />
+             <Route path="genres" element={<GenresList />} />
             <Route path="genre/:slug" element={<Genre />} />
             <Route path="song/:slug" element={<Song />} />
           </Route>

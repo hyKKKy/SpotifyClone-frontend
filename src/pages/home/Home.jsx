@@ -1,34 +1,49 @@
-import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import AppContext from "../../features/context/AppContext";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "./Home.css"; 
 
-export default  function Home() {
-    const {request, backUrl} = useContext(AppContext);
-    const [groups, setGroups] = useState([]);
+const Home = () => {
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        request("/api")
-        .then(setGroups)
-        .catch(console.error);
-    }, []);
+  return (
+    <div className=" py-5 text-center home-page home-container">
 
-    return <>        
-        <div className="text-center">
-            
+      <div className="row justify-content-center g-4">
+        <div className="col-6 col-sm-4 col-md-3">
+          <button
+            className="btn btn-dark w-100 home-btn"
+            onClick={() => navigate("/authors")}
+          >
+            Автор
+          </button>
         </div>
-        {/* <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-            {groups.map(group => <div key={group.id} className="col">
-                <Link className="nav-link h-100" to={"Category/" + group.slug}>
-                    <div className="card h-100">
-                        <img src={backUrl + "/STORAGE/Item/" + group.imageUrl} className="card-img-top" alt="..." />
-                        <div className="card-body">
-                            <h5 className="card-title">{group.name}</h5>
-                            <p className="card-text">{group.description}</p>
-                        </div>
-                        <div className="card-footer bg-transparent">Товарів: --</div>
-                    </div>
-                </Link>
-            </div>)}
-        </div> */}
-    </>;
-}
+        <div className="col-6 col-sm-4 col-md-3">
+          <button
+            className="btn btn-dark w-100 home-btn"
+            onClick={() => navigate("/genres")}
+          >
+            Жанры
+          </button>
+        </div>
+        <div className="col-6 col-sm-4 col-md-3">
+          <button
+            className="btn btn-dark w-100 home-btn"
+            onClick={() => navigate("/albums")}
+          >
+            Альбомы
+          </button>
+        </div>
+        <div className="col-6 col-sm-4 col-md-3">
+          <button
+            className="btn btn-dark w-100 home-btn"
+            onClick={() => navigate("/songs")}
+          >
+            Песни
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Home;

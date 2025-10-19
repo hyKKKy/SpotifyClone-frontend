@@ -9,28 +9,34 @@ export default function Layout() {
     const closeModalRef = useRef();
 
     const authenticate = (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const login = formData.get("user-login");
-        const password = formData.get("user-password");
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const login = formData.get("user-login");
+    const password = formData.get("user-password");
 
-        const userPass = `${login}:${password}`;
-        const credentials = Base64.encode(userPass);
+    const userPass = `${login}:${password}`;
+    const credentials = Base64.encode(userPass);
 
-        request('/api/user/jwt', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Basic ${credentials}`
-            }
-        }).then(jwt => {
-            closeModalRef.current.click();
-            setToken(jwt);
-            console.log("Success");
+    request('/api/user/jwt', {
+        method: 'GET',
+        headers: { 'Authorization': `Basic ${credentials}` }
+    })
+    .then(jwt => {
+        closeModalRef.current.click();
+        setToken(jwt);
+
+        request('/api/user/me')
+        .then(userData => {
+            console.log("User data:", userData);
+            setUser(userData); 
         })
-        .catch(err => {
-            console.error("Error", err);
-        });
-    };
+        .catch(err => console.error("Error fetching user data:", err));
+    })
+    .catch(err => {
+        console.error("Login error:", err);
+    });
+};
+
 
     return (
         <>
@@ -56,25 +62,52 @@ export default function Layout() {
 
                             <div>
                                 {!user ? (
-                                    <button type="button" className=" login-btn btn-primary rounded-pill px-4 py-2 text-black"
-                                        data-bs-toggle="modal" data-bs-target="#authModal">
-                                        <b>Вхід</b>
+                                    <button
+                                    type="button"
+                                    className="login-btn btn-primary rounded-pill px-4 py-2 text-black"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#authModal"
+                                    >
+                                    <b>Вхід</b>
                                     </button>
                                 ) : (
-                                    <button onClick={() => setToken(null)}
-                                        type="button"
-                                        className="btn btn-outline-warning"
-                                        title={user.name + ' ' + user.email}>
-                                        <i className="bi bi-box-arrow-right"></i>
-                                    </button>
+                                    <div className="dropdown">
+                                    <img
+                                        src={user.avatarUrl 
+                                                ? `https://localhost:7243/storage/${user.avatarUrl}` 
+                                                : "https://localhost:7243/storage/default-avatar.jpg"}
+                                        className="rounded-circle dropdown-toggle user-avatar"
+                                        id="userMenuButton"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                        alt="User Avatar"
+                                    />
+                                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
+                                        <li>
+                                        <a className="dropdown-item" href="/profile">Профіль</a>
+                                        </li>
+                                        <li>
+                                        <a className="dropdown-item" href="/favorites">Улюблені треки</a>
+                                        </li>
+                                        <li><hr className="dropdown-divider" /></li>
+                                        <li>
+                                        <button
+                                            className="dropdown-item text-danger"
+                                            onClick={() => setToken(null)}
+                                        >
+                                            Logout
+                                        </button>
+                                        </li>
+                                    </ul>
+                                    </div>
                                 )}
-                            </div>
+                                </div>
                         </div>
                     </div>
                 </nav>
             </header>
 
-            <main className="container my-3">
+            <main className="my-3 main-container">
                 <Outlet />
             </main>
 

@@ -1,0 +1,24 @@
+.home-page {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px !important;
+}
+
+.home-btn {
+  padding: 1rem;
+  font-size: 1.2rem;
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+  background-color: #1db954; /* Spotify зеленый */
+  transform: scale(1.05);
+  color: white;
+}
+
+.home-btn{
+    width: 200px !important;
+}
