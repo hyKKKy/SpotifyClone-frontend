@@ -9,7 +9,6 @@ import Home from '../pages/home/Home';
 import Base64 from '../shared/base64/Base64';
 import AdminPanel from '../pages/adminPanel/AdminPanel';
 import GenresList from "../pages/genre/GenresList";
-import Genres from "../pages/genre/Genre";
 
 function App() {
   const [token, setToken] = useState(null);

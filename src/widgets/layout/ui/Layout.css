@@ -72,7 +72,7 @@ main{
   height: 40px;
   object-fit: cover;
   cursor: pointer;
-  border: 2px solid #1db954; /* рамка Spotify-style */
+  border: 2px solid #1db954; 
   transition: transform 0.2s ease;
 }
 
@@ -97,4 +97,46 @@ main{
 .dropdown-item:hover{
     background-color: rgb(24, 24, 24);
     color: white;
+}
+
+.modal-content {
+    background-color: #121212;
+    color: #fff;
+    border-radius: 12px;
+}
+
+.form-control {
+    background-color: #a1a1a1;
+    color: #464646;
+    border: none;
+}
+
+.btn-success {
+    background-color: #1db954;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #1ed760;
+}
+
+.modal-content a{
+    color: #1db954;
+}
+body.modal-open main,
+body.modal-open footer {
+    filter: blur(5px);
+    transition: filter 0.3s ease;
+}
+body.modal-open header {
+    opacity: 0.7; 
+    transition: opacity 0.3s ease;
+}
+
+.btn-login-modal{
+    width: 500px;
+    font-size: 1rem;
+}
+.modal-footer{
+    justify-content: center;
 }

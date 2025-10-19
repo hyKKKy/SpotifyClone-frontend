@@ -8,34 +8,68 @@ export default function Layout() {
     const { request, setToken, user } = useContext(AppContext);
     const closeModalRef = useRef();
 
+
+    
     const authenticate = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const login = formData.get("user-login");
-    const password = formData.get("user-password");
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const login = formData.get("user-login");
+        const password = formData.get("user-password");
 
-    const userPass = `${login}:${password}`;
-    const credentials = Base64.encode(userPass);
+        const userPass = `${login}:${password}`;
+        const credentials = Base64.encode(userPass);
 
-    request('/api/user/jwt', {
-        method: 'GET',
-        headers: { 'Authorization': `Basic ${credentials}` }
-    })
-    .then(jwt => {
-        closeModalRef.current.click();
-        setToken(jwt);
-
-        request('/api/user/me')
-        .then(userData => {
-            console.log("User data:", userData);
-            setUser(userData); 
+        request('/api/user/jwt', {
+            method: 'GET',
+            headers: { 'Authorization': `Basic ${credentials}` }
         })
-        .catch(err => console.error("Error fetching user data:", err));
-    })
-    .catch(err => {
-        console.error("Login error:", err);
-    });
-};
+        .then(jwt => {
+            const loginModalEl = document.getElementById('loginModal');
+            const loginModal = bootstrap.Modal.getInstance(loginModalEl) || new bootstrap.Modal(loginModalEl);
+            loginModal.hide();
+
+            setToken(jwt);
+
+            request('/api/user/me')
+                .then(userData => {
+                    console.log("User data:", userData);
+                    setUser(userData); 
+                })
+                .catch(err => console.error("Error fetching user data:", err));
+        })
+        .catch(err => {
+            console.error("Login error:", err);
+        });
+    };
+    const handleRegister = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const password = formData.get("password");
+        const confirmPassword = formData.get("confirmPassword");
+        if (password !== confirmPassword) {
+            alert("Паролі не співпадають!");
+            return;
+        }
+
+        const data = new FormData();
+        data.append("name", formData.get("name"));
+        data.append("email", formData.get("email"));
+        data.append("password", password);
+        data.append("birthdate", formData.get("birthdate"));
+
+        request('/api/user/register', {
+            method: 'POST',
+            body: data
+        })
+        .then(() => {
+            const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+            registerModal.hide();
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        })
+        .catch(err => console.error("Registration error", err));
+    };
+
 
 
     return (
@@ -66,7 +100,7 @@ export default function Layout() {
                                     type="button"
                                     className="login-btn btn-primary rounded-pill px-4 py-2 text-black"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#authModal"
+                                    data-bs-target="#loginModal"
                                     >
                                     <b>Вхід</b>
                                     </button>
@@ -117,35 +151,71 @@ export default function Layout() {
                 </div>
             </footer>
 
-            {/* Modal */}
-            <div className="modal fade" id="authModal" tabIndex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="authModalLabel">Вхід у систему</h1>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <form id="auth-form" onSubmit={authenticate}>
-                                <div className="input-group mb-3">
-                                    <span className="input-group-text"><i className="bi bi-key"></i></span>
-                                    <input name="user-login" type="text" className="form-control" placeholder="Логін"
-                                        aria-label="User Login" required />
-                                </div>
-                                <div className="input-group mb-3">
-                                    <span className="input-group-text"><i className="bi bi-lock"></i></span>
-                                    <input name="user-password" type="password" className="form-control" placeholder="Пароль"
-                                        aria-label="User Password" required />
-                                </div>
-                            </form>
-                        </div>
-                        <div className="modal-footer">
-                            <button ref={closeModalRef} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
-                            <button type="submit" form="auth-form" className="btn btn-primary">Вхід</button>
-                        </div>
+            {/* Login Modal */}
+            <div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content bg-dark text-white">
+                <div className="modal-header border-0">
+                    <h5 className="modal-title" id="loginModalLabel">Вхід у систему</h5>
+                    <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div className="modal-body">
+                    <form id="login-form" onSubmit={authenticate}>
+                    <div className="mb-3">
+                        <input name="user-login" type="text" className="form-control" placeholder="Логін" required />
                     </div>
+                    <div className="mb-3">
+                        <input name="user-password" type="password" className="form-control" placeholder="Пароль" required />
+                    </div>
+                    </form>
+                </div>
+                <div className="modal-footer border-0">
+                    <button type="submit" form="login-form" className="btn btn-success btn-login-modal">Вхід</button>
+                </div>
+                <div className="text-center mb-3">
+                    Ще немає акаунту? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Зареєструватися</a>
+                </div>
                 </div>
             </div>
+            </div>
+
+            {/* Register Modal */}
+            <div className="modal fade" id="registerModal" tabIndex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+            <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content bg-dark text-white">
+                <div className="modal-header border-0">
+                    <h5 className="modal-title" id="registerModalLabel">Реєстрація</h5>
+                    <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div className="modal-body">
+                    <form id="register-form" onSubmit={handleRegister} encType="multipart/form-data">
+                        <div className="mb-3">
+                            <input name="name" type="text" className="form-control" placeholder="Ім'я" required />
+                        </div>
+                        <div className="mb-3">
+                            <input name="email" type="email" className="form-control" placeholder="Email" required />
+                        </div>
+                        <div className="mb-3">
+                            <input name="password" type="password" className="form-control" placeholder="Пароль" required />
+                        </div>
+                        <div className="mb-3">
+                            <input name="confirmPassword" type="password" className="form-control" placeholder="Підтвердіть пароль" required />
+                        </div>
+                        <div className="mb-3">
+                            <input name="birthdate" type="date" className="form-control" placeholder="Дата народження" required />
+                        </div>
+                    </form>
+                </div>
+                <div className="modal-footer border-0">
+                    <button type="submit" form="register-form" className="btn btn-success">Зареєструватися</button>
+                </div>
+                <div className="text-center mb-3">
+                    Вже є акаунт? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Увійти</a>
+                </div>
+                </div>
+            </div>
+            </div>
+
         </>
     );
 }
