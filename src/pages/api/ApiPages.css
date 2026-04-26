@@ -93,6 +93,17 @@
   outline-offset: 1px;
 }
 
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
+  border-color: rgba(255, 107, 107, 0.65);
+}
+
+.field-error {
+  color: #ffc4c4;
+  font-size: 0.84rem;
+}
+
 .button-row {
   display: flex;
   flex-wrap: wrap;

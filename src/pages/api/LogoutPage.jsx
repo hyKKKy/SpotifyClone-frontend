@@ -1,21 +1,20 @@
 import { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
-import EndpointHero from '../../shared/ui/EndpointHero';
 
 export default function LogoutPage() {
-  const { auth, logout } = useContext(AppContext);
+  const { auth, isAuthenticated, logout } = useContext(AppContext);
   const [error, setError] = useState('');
-  const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     setError('');
-    setFeedback('');
     setIsSubmitting(true);
 
     try {
-      const payload = await logout();
-      setFeedback(payload.Status || 'Logged out');
+      await logout();
+      navigate('/');
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -24,29 +23,23 @@ export default function LogoutPage() {
   };
 
   return (
-    <section className="page-shell">
-      <EndpointHero
-        description="This page clears both the backend session and the frontend auth snapshot so you can retest login and signup flows quickly."
-        endpoint="/api/user/logout"
-        method="POST"
-        title="Log out"
-      >
-        <p className="eyebrow">Current session</p>
-        <h3>{auth.userName || 'Guest session'}</h3>
-        <p>{auth.token ? 'JWT present in local storage.' : 'No JWT stored.'}</p>
-      </EndpointHero>
-
-      {feedback ? <div className="status-banner status-banner--success">{feedback}</div> : null}
-      {error ? <div className="status-banner status-banner--error">{error}</div> : null}
-
-      <article className="surface-card form-panel">
-        <p className="helper-copy">
-          Use this whenever you want to reset the frontend state and backend session before another auth test.
+    <section className="music-page page-shell">
+      <article className="surface-card restricted-card">
+        <p className="eyebrow">Log out</p>
+        <h2>{isAuthenticated ? `End the session for ${auth.userName}?` : 'There is no active session right now.'}</h2>
+        <p>
+          Logging out clears the frontend auth snapshot and tells the backend to close the current session as well.
         </p>
+
+        {error ? <div className="status-banner status-banner--error">{error}</div> : null}
+
         <div className="button-row">
-          <button className="button button-danger" disabled={isSubmitting} onClick={handleLogout} type="button">
-            {isSubmitting ? 'Logging out...' : 'Log out now'}
+          <button className="button button-primary" disabled={isSubmitting || !isAuthenticated} onClick={handleLogout} type="button">
+            {isSubmitting ? 'Logging out...' : 'Log out'}
           </button>
+          <Link className="button button-secondary" to="/profile">
+            Back to profile
+          </Link>
         </div>
       </article>
     </section>

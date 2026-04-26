@@ -25,19 +25,20 @@ export default function StorageUploadPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const form = event.currentTarget;
     setError('');
     setUploadResult(null);
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData(event.currentTarget);
+      const formData = new FormData(form);
       const payload = await request('/storage/upload', {
         method: 'POST',
         body: formData,
       });
 
       setUploadResult(payload);
-      event.currentTarget.reset();
+      form.reset();
     } catch (requestError) {
       setError(requestError.message);
     } finally {

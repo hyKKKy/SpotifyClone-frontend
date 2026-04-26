@@ -1,28 +1,29 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
-import EndpointHero from '../../shared/ui/EndpointHero';
 
 export default function AddAlbumPage() {
-  const { request, resolveBackendUrl } = useContext(AppContext);
+  const { refreshCatalog, request, resolveBackendUrl } = useContext(AppContext);
   const [createdAlbum, setCreatedAlbum] = useState(null);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const form = event.currentTarget;
     setIsSubmitting(true);
     setError('');
 
     try {
-      const formData = new FormData(event.currentTarget);
+      const formData = new FormData(form);
       const payload = await request('/api/albums/add', {
         method: 'POST',
         body: formData,
       });
 
       setCreatedAlbum(payload.data || null);
-      event.currentTarget.reset();
+      await refreshCatalog();
+      form.reset();
     } catch (requestError) {
       setError(requestError.message);
       setCreatedAlbum(null);
@@ -32,21 +33,26 @@ export default function AddAlbumPage() {
   };
 
   return (
-    <section className="page-shell">
-      <EndpointHero
-        description="This form posts exactly the field names your ASP.NET controller expects, including the optional cover upload."
-        endpoint="/api/albums/add"
-        method="POST"
-        title="Add an album"
-      >
-        <p className="eyebrow">Expected form fields</p>
-        <div className="pill-list">
-          <span>album-title</span>
-          <span>album-artist</span>
-          <span>album-release-date</span>
-          <span>album-cover</span>
+    <section className="music-page page-shell">
+      <div className="listen-hero listen-hero--compact">
+        <div className="listen-hero__copy">
+          <p className="eyebrow">Studio</p>
+          <h2>Create a new album and publish it into the listener views.</h2>
+          <p>
+            Albums created here appear on the home page, browse page, and album library as soon as the request finishes.
+          </p>
         </div>
-      </EndpointHero>
+
+        <div className="surface-card hero-summary">
+          <p className="eyebrow">Expected fields</p>
+          <div className="pill-list">
+            <span>album-title</span>
+            <span>album-artist</span>
+            <span>album-release-date</span>
+            <span>album-cover</span>
+          </div>
+        </div>
+      </div>
 
       {error ? <div className="status-banner status-banner--error">{error}</div> : null}
 
@@ -84,8 +90,8 @@ export default function AddAlbumPage() {
             <button className="button button-primary" disabled={isSubmitting} type="submit">
               {isSubmitting ? 'Uploading album...' : 'Create album'}
             </button>
-            <Link className="button button-secondary" to="/albums">
-              View catalog
+            <Link className="button button-secondary" to="/studio">
+              Back to studio
             </Link>
           </div>
         </form>
@@ -105,7 +111,7 @@ export default function AddAlbumPage() {
               </div>
             </div>
           ) : (
-            <p className="empty-state">Submit the form to see the created album payload and cover preview here.</p>
+            <p className="empty-state">Submit the form to see the created album payload and its artwork preview here.</p>
           )}
         </article>
       </div>

@@ -1,54 +1,28 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
-import EndpointHero from '../../shared/ui/EndpointHero';
 
 export default function AddTrackPage() {
-  const { request, resolveBackendUrl } = useContext(AppContext);
-  const [albums, setAlbums] = useState([]);
+  const { catalog, request, resolveBackendUrl } = useContext(AppContext);
   const [createdTrack, setCreatedTrack] = useState(null);
   const [error, setError] = useState('');
-  const [albumsError, setAlbumsError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadAlbums() {
-      try {
-        const payload = await request('/api/albums');
-        if (isMounted) {
-          setAlbums(Array.isArray(payload.data) ? payload.data : []);
-        }
-      } catch (requestError) {
-        if (isMounted) {
-          setAlbumsError(requestError.message);
-          setAlbums([]);
-        }
-      }
-    }
-
-    void loadAlbums();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [request]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const form = event.currentTarget;
     setError('');
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData(event.currentTarget);
+      const formData = new FormData(form);
       const payload = await request('/api/tracks/add', {
         method: 'POST',
         body: formData,
       });
 
       setCreatedTrack(payload.data || null);
-      event.currentTarget.reset();
+      form.reset();
     } catch (requestError) {
       setError(requestError.message);
       setCreatedTrack(null);
@@ -58,26 +32,25 @@ export default function AddTrackPage() {
   };
 
   return (
-    <section className="page-shell">
-      <EndpointHero
-        description="The frontend is wired to the live track upload endpoint and uses the album catalog as the source for the album selector."
-        endpoint="/api/tracks/add"
-        method="POST"
-        title="Add a track"
-      >
-        <p className="eyebrow">Backend caveat</p>
-        <p>
-          The codebase now falls back to a `General` genre when needed, but the backend process already running on port
-          `7243` has to be restarted before this endpoint picks up that fix.
-        </p>
-      </EndpointHero>
+    <section className="music-page page-shell">
+      <div className="listen-hero listen-hero--compact">
+        <div className="listen-hero__copy">
+          <p className="eyebrow">Studio</p>
+          <h2>Upload a new track into an existing album.</h2>
+          <p>
+            Track uploads stay admin-only, and the album selector here is powered directly by the live catalog already
+            loaded into the app.
+          </p>
+        </div>
 
-      {albumsError ? <div className="status-banner status-banner--error">{albumsError}</div> : null}
-      {error ? <div className="status-banner status-banner--error">{error}</div> : null}
-      <div className="status-banner status-banner--warning">
-        The form is connected and ready. If you still get a server error here, restart the backend that is already bound
-        to `https://localhost:7243`.
+        <div className="surface-card hero-summary">
+          <p className="eyebrow">Album choices</p>
+          <strong>{catalog.albums.length}</strong>
+          <span>{catalog.albums.length ? 'Albums are ready for track assignment.' : 'Create an album before uploading tracks.'}</span>
+        </div>
       </div>
+
+      {error ? <div className="status-banner status-banner--error">{error}</div> : null}
 
       <div className="panel-grid">
         <form className="surface-card form-panel form-grid" onSubmit={handleSubmit}>
@@ -99,7 +72,7 @@ export default function AddTrackPage() {
               <option disabled value="">
                 Select an album
               </option>
-              {albums.map((album) => (
+              {catalog.albums.map((album) => (
                 <option key={album.id} value={album.id}>
                   {album.title} by {album.artist}
                 </option>
@@ -113,16 +86,21 @@ export default function AddTrackPage() {
           </div>
 
           <div className="button-row">
-            <button className="button button-primary" disabled={isSubmitting || !albums.length} type="submit">
+            <button className="button button-primary" disabled={isSubmitting || !catalog.albums.length} type="submit">
               {isSubmitting ? 'Uploading track...' : 'Create track'}
             </button>
-            <Link className="button button-secondary" to="/albums">
-              Back to albums
+            <Link className="button button-secondary" to="/studio">
+              Back to studio
             </Link>
           </div>
 
-          {!albums.length ? (
+          {!catalog.albums.length ? (
             <p className="helper-copy">You need at least one album before a track can be attached to it.</p>
+          ) : null}
+          {error ? (
+            <p className="helper-copy">
+              If the error is a backend save failure, restart the backend bound to `https://localhost:7243` and try again.
+            </p>
           ) : null}
         </form>
 

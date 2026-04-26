@@ -1,28 +1,51 @@
 import { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
-import EndpointHero from '../../shared/ui/EndpointHero';
 
 export default function LoginPage() {
-  const { auth, login } = useContext(AppContext);
+  const { isAdmin, login } = useContext(AppContext);
   const [error, setError] = useState('');
-  const [feedback, setFeedback] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+
+  const validateForm = (formData) => {
+    const nextErrors = {};
+    const loginValue = formData.get('login')?.trim() || '';
+    const passwordValue = formData.get('password') || '';
+
+    if (!loginValue) {
+      nextErrors.login = 'Login is required.';
+    }
+
+    if (!passwordValue) {
+      nextErrors.password = 'Password is required.';
+    }
+
+    return nextErrors;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    const nextFieldErrors = validateForm(formData);
 
     setError('');
-    setFeedback('');
+    setFieldErrors(nextFieldErrors);
+
+    if (Object.keys(nextFieldErrors).length) {
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const payload = await login({
-        login: formData.get('login'),
+      await login({
+        login: formData.get('login').trim(),
         password: formData.get('password'),
       });
 
-      setFeedback(payload.Status ? `${payload.Status}: ${payload.userName}` : `Logged in as ${payload.userName}`);
+      navigate('/');
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -31,47 +54,56 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="page-shell">
-      <EndpointHero
-        description="The login page uses the backend session endpoint. During local development it works through the Vite proxy so the cookie stays same-origin."
-        endpoint="/api/user/login"
-        method="POST"
-        title="Log in"
-      >
-        <p className="eyebrow">Current frontend state</p>
-        <h3>{auth.userName || 'Guest session'}</h3>
-        <p>{auth.token ? 'A JWT is currently stored from signup.' : 'No JWT stored right now.'}</p>
-      </EndpointHero>
+    <section className="music-page page-shell">
+      <div className="auth-layout auth-layout--single">
+        <form className="surface-card form-panel form-grid auth-form" noValidate onSubmit={handleSubmit}>
+          <div className="auth-form__heading">
+            <p className="eyebrow">Log in</p>
+            <h2>Welcome back</h2>
+          </div>
+          {error ? <div className="status-banner status-banner--error">{error}</div> : null}
 
-      {feedback ? <div className="status-banner status-banner--success">{feedback}</div> : null}
-      {error ? <div className="status-banner status-banner--error">{error}</div> : null}
-
-      <form className="surface-card form-panel form-grid" onSubmit={handleSubmit}>
-        <div className="form-grid form-grid--two">
           <div className="field">
             <label htmlFor="login">Login</label>
-            <input autoComplete="username" id="login" name="login" placeholder="Admin" required type="text" />
+            <input
+              aria-describedby={fieldErrors.login ? 'login-error' : undefined}
+              aria-invalid={Boolean(fieldErrors.login)}
+              autoComplete="username"
+              id="login"
+              name="login"
+              placeholder="Admin"
+              required
+              type="text"
+            />
+            {fieldErrors.login ? <span className="field-error" id="login-error">{fieldErrors.login}</span> : null}
           </div>
 
           <div className="field">
             <label htmlFor="password">Password</label>
             <input
+              aria-describedby={fieldErrors.password ? 'password-error' : undefined}
+              aria-invalid={Boolean(fieldErrors.password)}
               autoComplete="current-password"
               id="password"
               name="password"
-              placeholder="Password"
               required
               type="password"
             />
+            {fieldErrors.password ? <span className="field-error" id="password-error">{fieldErrors.password}</span> : null}
           </div>
-        </div>
 
-        <div className="button-row">
-          <button className="button button-primary" disabled={isSubmitting} type="submit">
-            {isSubmitting ? 'Signing in...' : 'Sign in'}
-          </button>
-        </div>
-      </form>
+          <div className="button-row">
+            <button className="button button-primary" disabled={isSubmitting} type="submit">
+              {isSubmitting ? 'Signing in...' : 'Sign in'}
+            </button>
+            <Link className="button button-secondary" to="/auth/signup">
+              Create account
+            </Link>
+          </div>
+
+          <p className="helper-copy">{isAdmin ? 'Admin access is active for this session.' : 'Regular users stay in browse-only mode.'}</p>
+        </form>
+      </div>
     </section>
   );
 }
