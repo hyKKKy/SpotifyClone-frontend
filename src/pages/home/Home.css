@@ -1,24 +1,85 @@
-.home-page {
-  min-height: 80vh;
+.home-hero {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.9fr);
+}
+
+.home-copy {
+  background:
+    radial-gradient(circle at right top, rgba(30, 215, 96, 0.32), transparent 36%),
+    linear-gradient(140deg, rgba(16, 21, 19, 0.96), rgba(8, 11, 10, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 30px;
+  display: grid;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.home-copy h1 {
+  font-size: clamp(2.4rem, 4vw, 4.3rem);
+  line-height: 1;
+  margin: 0;
+  max-width: 12ch;
+}
+
+.hero-text {
+  color: var(--text-soft);
+  font-size: 1.02rem;
+  margin: 0;
+  max-width: 60ch;
+}
+
+.hero-actions {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.home-status {
+  align-content: start;
+}
+
+.status-row {
   align-items: center;
-  padding-top: 10px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding-bottom: 0.85rem;
 }
 
-.home-btn {
-  padding: 1rem;
-  font-size: 1.2rem;
-  border-radius: 1rem;
-  transition: all 0.3s ease;
+.status-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
 }
 
-.home-btn:hover {
-  background-color: #1db954; /* Spotify зеленый */
-  transform: scale(1.05);
-  color: white;
+.status-row span {
+  color: var(--text-muted);
 }
 
-.home-btn{
-    width: 200px !important;
+.home-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.endpoint-card {
+  min-height: 100%;
+}
+
+.endpoint-card code {
+  color: var(--accent-soft);
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .home-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .home-copy h1 {
+    max-width: 100%;
+  }
 }

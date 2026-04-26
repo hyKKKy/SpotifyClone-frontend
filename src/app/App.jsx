@@ -1,91 +1,137 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import './ui/App.css';
-import Genre from '../pages/genre/Genre';
-import Song from '../pages/song/Song';
 import AppContext from '../features/context/AppContext';
-import Layout from '../widgets/layout/Layout';
 import Home from '../pages/home/Home';
-import Base64 from '../shared/base64/Base64';
-import AdminPanel from '../pages/adminPanel/AdminPanel';
-import GenresList from "../pages/genre/GenresList";
+import NotFoundPage from '../pages/status/NotFoundPage';
+import RouteStubPage from '../pages/status/RouteStubPage';
+import { extractApiMessage, normalizePayload, resolveBackendUrl } from '../shared/api/http';
+import { endpointCards } from '../shared/config/endpoints';
+import Layout from '../widgets/layout/Layout';
+
+const AUTH_STORAGE_KEY = 'spotify-clone-auth';
+
+function readStoredAuth() {
+  try {
+    const storedValue = localStorage.getItem(AUTH_STORAGE_KEY);
+    return storedValue ? JSON.parse(storedValue) : { token: null, userName: null, email: null, role: null };
+  } catch {
+    return { token: null, userName: null, email: null, role: null };
+  }
+}
 
 function App() {
-  const [token, setToken] = useState(null);
-  const [user, setUser] = useState(null);
-
-  const backUrl = "https://localhost:7243";
+  const [auth, setAuth] = useState(readStoredAuth);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    if (savedToken) {
-      setToken(savedToken);
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
+  }, [auth]);
+
+  const request = async (path, options = {}) => {
+    const requestUrl = resolveBackendUrl(path);
+    const headers = new Headers(options.headers || {});
+    let body = options.body;
+
+    if (!(body instanceof FormData) && body && typeof body !== 'string') {
+      headers.set('Content-Type', 'application/json');
+      body = JSON.stringify(body);
     }
-  }, []);
 
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem("token", token);
-      setUser(Base64.jwtDecodePayload(token));
+    if (auth.token) {
+      headers.set('Authorization', `Bearer ${auth.token}`);
+    }
+
+    const response = await fetch(requestUrl, {
+      ...options,
+      body,
+      headers,
+      credentials: 'include',
+    });
+
+    let payload = null;
+    const contentType = response.headers.get('content-type') || '';
+
+    if (contentType.includes('application/json')) {
+      payload = await response.json();
     } else {
-      localStorage.removeItem("token");
-      setUser(null);
+      payload = await response.text();
     }
-  }, [token]);
 
-const request = (url, conf) => new Promise(async (resolve, reject) => {
-    try {
-        if (url.startsWith('/')) {
-            url = backUrl + url;
+    const normalizedPayload = normalizePayload(payload);
 
-            conf = conf || {};
-            conf.headers = conf.headers || {};
-
-            // Всегда добавляем JWT, если есть
-            if (token) {
-                conf.headers['Authorization'] = 'Bearer ' + token;
-            }
-        }
-
-        const response = await fetch(url, conf);
-        const contentType = response.headers.get('content-type') || '';
-        const text = await response.text(); 
-
-        let json;
-        if (contentType.includes('application/json') && text) {
-            try {
-                json = JSON.parse(text);
-            } catch (e) {
-                reject({ status: { isOk: false }, message: 'Invalid JSON response', raw: text });
-                return;
-            }
-        } else {
-            json = { status: { isOk: response.ok }, data: text || null };
-        }
-
-        if (response.ok && json.status?.isOk) {
-            resolve(json.data);
-        } else {
-            reject(json);
-        }
-
-    } catch (err) {
-        reject({ status: { isOk: false }, message: err.message });
+    if (!response.ok || normalizedPayload.isError) {
+      const error = new Error(extractApiMessage(payload, `Request failed with status ${response.status}`));
+      error.status = response.status;
+      error.payload = payload;
+      throw error;
     }
-});
 
+    return payload;
+  };
 
+  const login = async ({ login: userLogin, password }) => {
+    const payload = await request('/api/user/login', {
+      method: 'POST',
+      body: { login: userLogin, password },
+    });
+
+    setAuth((currentAuth) => ({
+      ...currentAuth,
+      userName: payload.userName || userLogin,
+    }));
+
+    return payload;
+  };
+
+  const signup = async (formValues) => {
+    const payload = await request('/api/user/signup', {
+      method: 'POST',
+      body: formValues,
+    });
+
+    setAuth({
+      token: payload.token || null,
+      userName: payload.name || null,
+      email: payload.email || null,
+      role: payload.role || null,
+    });
+
+    return payload;
+  };
+
+  const logout = async () => {
+    const payload = await request('/api/user/logout', { method: 'POST' });
+    setAuth({ token: null, userName: null, email: null, role: null });
+    return payload;
+  };
 
   return (
-    <AppContext.Provider value={{ request, backUrl, user, setToken }}>
+    <AppContext.Provider
+      value={{
+        auth,
+        endpointCards,
+        login,
+        logout,
+        request,
+        resolveBackendUrl,
+        setAuth,
+        signup,
+      }}
+    >
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-             <Route path="admin" element={user?.role === "Admin" ? <AdminPanel /> : <Home />} />
-             <Route path="genres" element={<GenresList />} />
-            <Route path="genre/:slug" element={<Genre />} />
-            <Route path="song/:slug" element={<Song />} />
+            <Route path="albums" element={<RouteStubPage route="/albums" />} />
+            <Route path="albums/add" element={<RouteStubPage route="/albums/add" />} />
+            <Route path="tracks/add" element={<RouteStubPage route="/tracks/add" />} />
+            <Route path="auth/login" element={<RouteStubPage route="/auth/login" />} />
+            <Route path="auth/signup" element={<RouteStubPage route="/auth/signup" />} />
+            <Route path="auth/logout" element={<RouteStubPage route="/auth/logout" />} />
+            <Route path="storage/upload" element={<RouteStubPage route="/storage/upload" />} />
+            <Route path="storage/item" element={<RouteStubPage route="/storage/item" />} />
+            <Route path="storage/item/:itemId" element={<RouteStubPage route="/storage/item" />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
