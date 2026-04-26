@@ -67,15 +67,16 @@ export default function AddTrackPage() {
       >
         <p className="eyebrow">Backend caveat</p>
         <p>
-          The current backend action does not accept a genre even though the database model requires one. If this page
-          fails after upload, that server action needs a small follow-up fix.
+          The codebase now falls back to a `General` genre when needed, but the backend process already running on port
+          `7243` has to be restarted before this endpoint picks up that fix.
         </p>
       </EndpointHero>
 
       {albumsError ? <div className="status-banner status-banner--error">{albumsError}</div> : null}
       {error ? <div className="status-banner status-banner--error">{error}</div> : null}
       <div className="status-banner status-banner--warning">
-        The form is connected and ready. A server-side `GenreId` mismatch may still block successful inserts until the backend is adjusted.
+        The form is connected and ready. If you still get a server error here, restart the backend that is already bound
+        to `https://localhost:7243`.
       </div>
 
       <div className="panel-grid">
