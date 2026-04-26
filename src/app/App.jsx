@@ -1,10 +1,18 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './ui/App.css';
+import '../pages/api/ApiPages.css';
 import AppContext from '../features/context/AppContext';
+import AddAlbumPage from '../pages/api/AddAlbumPage';
+import AddTrackPage from '../pages/api/AddTrackPage';
+import AlbumsPage from '../pages/api/AlbumsPage';
+import LoginPage from '../pages/api/LoginPage';
+import LogoutPage from '../pages/api/LogoutPage';
+import SignupPage from '../pages/api/SignupPage';
+import StorageItemPage from '../pages/api/StorageItemPage';
+import StorageUploadPage from '../pages/api/StorageUploadPage';
 import Home from '../pages/home/Home';
 import NotFoundPage from '../pages/status/NotFoundPage';
-import RouteStubPage from '../pages/status/RouteStubPage';
 import { extractApiMessage, normalizePayload, resolveBackendUrl } from '../shared/api/http';
 import { endpointCards } from '../shared/config/endpoints';
 import Layout from '../widgets/layout/Layout';
@@ -27,7 +35,7 @@ function App() {
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(auth));
   }, [auth]);
 
-  const request = async (path, options = {}) => {
+  const request = useCallback(async (path, options = {}) => {
     const requestUrl = resolveBackendUrl(path);
     const headers = new Headers(options.headers || {});
     let body = options.body;
@@ -67,23 +75,25 @@ function App() {
     }
 
     return payload;
-  };
+  }, [auth.token]);
 
-  const login = async ({ login: userLogin, password }) => {
+  const login = useCallback(async ({ login: userLogin, password }) => {
     const payload = await request('/api/user/login', {
       method: 'POST',
       body: { login: userLogin, password },
     });
 
-    setAuth((currentAuth) => ({
-      ...currentAuth,
+    setAuth({
+      token: null,
       userName: payload.userName || userLogin,
-    }));
+      email: null,
+      role: null,
+    });
 
     return payload;
-  };
+  }, [request]);
 
-  const signup = async (formValues) => {
+  const signup = useCallback(async (formValues) => {
     const payload = await request('/api/user/signup', {
       method: 'POST',
       body: formValues,
@@ -97,13 +107,13 @@ function App() {
     });
 
     return payload;
-  };
+  }, [request]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     const payload = await request('/api/user/logout', { method: 'POST' });
     setAuth({ token: null, userName: null, email: null, role: null });
     return payload;
-  };
+  }, [request]);
 
   return (
     <AppContext.Provider
@@ -122,15 +132,15 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="albums" element={<RouteStubPage route="/albums" />} />
-            <Route path="albums/add" element={<RouteStubPage route="/albums/add" />} />
-            <Route path="tracks/add" element={<RouteStubPage route="/tracks/add" />} />
-            <Route path="auth/login" element={<RouteStubPage route="/auth/login" />} />
-            <Route path="auth/signup" element={<RouteStubPage route="/auth/signup" />} />
-            <Route path="auth/logout" element={<RouteStubPage route="/auth/logout" />} />
-            <Route path="storage/upload" element={<RouteStubPage route="/storage/upload" />} />
-            <Route path="storage/item" element={<RouteStubPage route="/storage/item" />} />
-            <Route path="storage/item/:itemId" element={<RouteStubPage route="/storage/item" />} />
+            <Route path="albums" element={<AlbumsPage />} />
+            <Route path="albums/add" element={<AddAlbumPage />} />
+            <Route path="tracks/add" element={<AddTrackPage />} />
+            <Route path="auth/login" element={<LoginPage />} />
+            <Route path="auth/signup" element={<SignupPage />} />
+            <Route path="auth/logout" element={<LogoutPage />} />
+            <Route path="storage/upload" element={<StorageUploadPage />} />
+            <Route path="storage/item" element={<StorageItemPage />} />
+            <Route path="storage/item/:itemId" element={<StorageItemPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
