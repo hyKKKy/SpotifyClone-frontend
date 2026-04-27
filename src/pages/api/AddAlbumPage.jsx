@@ -1,83 +1,183 @@
-import { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
 
+const todayInputValue = () => new Date().toISOString().slice(0, 10);
+
+const emptyFormValues = () => ({
+  artist: '',
+  releaseDate: todayInputValue(),
+  title: '',
+});
+
+function toDateInputValue(value) {
+  if (!value) {
+    return todayInputValue();
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return value;
+  }
+
+  const parsedDate = new Date(value);
+
+  if (!Number.isNaN(parsedDate.getTime())) {
+    return parsedDate.toISOString().slice(0, 10);
+  }
+
+  const dateParts = String(value).match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+
+  if (dateParts) {
+    const [, firstPart, secondPart, year] = dateParts;
+    const day = Number(firstPart) > 12 ? firstPart : secondPart;
+    const month = Number(firstPart) > 12 ? secondPart : firstPart;
+
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+
+  return todayInputValue();
+}
+
 export default function AddAlbumPage() {
-  const { refreshCatalog, request, resolveBackendUrl } = useContext(AppContext);
-  const [createdAlbum, setCreatedAlbum] = useState(null);
+  const { albumId } = useParams();
+  const { catalog, refreshCatalog, request, resolveBackendUrl } = useContext(AppContext);
+  const isEditMode = Boolean(albumId);
+  const selectedAlbum = useMemo(
+    () => catalog.albums.find((album) => String(album.id) === String(albumId)),
+    [albumId, catalog.albums],
+  );
+  const [formValues, setFormValues] = useState(emptyFormValues);
+  const [savedAlbum, setSavedAlbum] = useState(null);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      setFormValues(emptyFormValues());
+      return;
+    }
+
+    if (selectedAlbum) {
+      setFormValues({
+        artist: selectedAlbum.artist || '',
+        releaseDate: toDateInputValue(selectedAlbum.releaseDate),
+        title: selectedAlbum.title || '',
+      });
+    }
+  }, [isEditMode, selectedAlbum]);
+
+  const handleFieldChange = (event) => {
+    const { name, value } = event.target;
+    const fieldName = name.replace('album-', '').replace('-date', 'Date');
+
+    setFormValues((currentValues) => ({
+      ...currentValues,
+      [fieldName]: value,
+    }));
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     setIsSubmitting(true);
     setError('');
+    setSuccessMessage('');
 
     try {
       const formData = new FormData(form);
-      const payload = await request('/api/albums/add', {
-        method: 'POST',
+      const payload = await request(isEditMode ? `/api/albums/update/${albumId}` : '/api/albums/add', {
+        method: isEditMode ? 'PUT' : 'POST',
         body: formData,
       });
 
-      setCreatedAlbum(payload.data || null);
+      setSavedAlbum(payload.data || {
+        ...selectedAlbum,
+        artist: formValues.artist,
+        releaseDate: formValues.releaseDate,
+        title: formValues.title,
+      });
+      setSuccessMessage(isEditMode ? 'Album updated.' : 'Album created.');
       await refreshCatalog();
-      form.reset();
+
+      if (!isEditMode) {
+        setFormValues(emptyFormValues());
+        form.reset();
+      }
     } catch (requestError) {
       setError(requestError.message);
-      setCreatedAlbum(null);
+      setSavedAlbum(null);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const isMissingAlbum = isEditMode && !catalog.isLoading && !selectedAlbum;
+  const pageTitle = isEditMode ? 'Update an album already published in the listener views.' : 'Create a new album and publish it into the listener views.';
+  const submitLabel = isEditMode ? 'Update album' : 'Create album';
+  const submittingLabel = isEditMode ? 'Updating album...' : 'Uploading album...';
 
   return (
     <section className="music-page page-shell">
       <div className="listen-hero listen-hero--compact">
         <div className="listen-hero__copy">
           <p className="eyebrow">Studio</p>
-          <h2>Create a new album and publish it into the listener views.</h2>
+          <h2>{pageTitle}</h2>
           <p>
-            Albums created here appear on the home page, browse page, and album library as soon as the request finishes.
+            Albums saved here appear on the home page, browse page, and album library as soon as the request finishes.
           </p>
         </div>
 
         <div className="surface-card hero-summary">
-          <p className="eyebrow">Expected fields</p>
-          <div className="pill-list">
-            <span>album-title</span>
-            <span>album-artist</span>
-            <span>album-release-date</span>
-            <span>album-cover</span>
-          </div>
+          <p className="eyebrow">{isEditMode ? 'Editing' : 'Album records'}</p>
+          <strong>{isEditMode ? selectedAlbum?.title || 'Loading' : catalog.albums.length}</strong>
+          <span>{isEditMode ? selectedAlbum?.artist || 'Waiting for the album catalog.' : 'Albums currently visible in the app.'}</span>
         </div>
       </div>
 
       {error ? <div className="status-banner status-banner--error">{error}</div> : null}
+      {successMessage ? <div className="status-banner status-banner--success">{successMessage}</div> : null}
+      {isMissingAlbum ? <div className="status-banner status-banner--warning">That album is not in the current catalog.</div> : null}
 
       <div className="panel-grid">
         <form className="surface-card form-panel form-grid" onSubmit={handleSubmit}>
           <div className="form-grid form-grid--two">
             <div className="field">
               <label htmlFor="album-title">Album title</label>
-              <input id="album-title" name="album-title" placeholder="Midnight Echoes" required type="text" />
+              <input
+                id="album-title"
+                name="album-title"
+                onChange={handleFieldChange}
+                placeholder="Midnight Echoes"
+                required
+                type="text"
+                value={formValues.title}
+              />
             </div>
 
             <div className="field">
               <label htmlFor="album-artist">Artist</label>
-              <input id="album-artist" name="album-artist" placeholder="Nova Pulse" required type="text" />
+              <input
+                id="album-artist"
+                name="album-artist"
+                onChange={handleFieldChange}
+                placeholder="Nova Pulse"
+                required
+                type="text"
+                value={formValues.artist}
+              />
             </div>
           </div>
 
           <div className="field">
             <label htmlFor="album-release-date">Release date</label>
             <input
-              defaultValue={new Date().toISOString().slice(0, 10)}
               id="album-release-date"
               name="album-release-date"
+              onChange={handleFieldChange}
               required
               type="date"
+              value={formValues.releaseDate}
             />
           </div>
 
@@ -87,9 +187,12 @@ export default function AddAlbumPage() {
           </div>
 
           <div className="button-row">
-            <button className="button button-primary" disabled={isSubmitting} type="submit">
-              {isSubmitting ? 'Uploading album...' : 'Create album'}
+            <button className="button button-primary" disabled={isSubmitting || isMissingAlbum} type="submit">
+              {isSubmitting ? submittingLabel : submitLabel}
             </button>
+            <Link className="button button-secondary" to="/albums">
+              Back to albums
+            </Link>
             <Link className="button button-secondary" to="/studio">
               Back to studio
             </Link>
@@ -98,20 +201,20 @@ export default function AddAlbumPage() {
 
         <article className="surface-card result-panel">
           <p className="eyebrow">Latest response</p>
-          {createdAlbum ? (
+          {savedAlbum ? (
             <div className="preview-panel">
-              <h3>{createdAlbum.title}</h3>
-              <p className="response-code">Album id: {createdAlbum.id}</p>
+              <h3>{savedAlbum.title}</h3>
+              <p className="response-code">Album id: {savedAlbum.id}</p>
               <div className="preview-frame">
-                {createdAlbum.coverUrl ? (
-                  <img alt={createdAlbum.title} src={resolveBackendUrl(createdAlbum.coverUrl)} />
+                {savedAlbum.coverUrl ? (
+                  <img alt={savedAlbum.title} src={resolveBackendUrl(savedAlbum.coverUrl)} />
                 ) : (
                   <span>No cover uploaded for this album.</span>
                 )}
               </div>
             </div>
           ) : (
-            <p className="empty-state">Submit the form to see the created album payload and its artwork preview here.</p>
+            <p className="empty-state">Submit the form to see the saved album payload and its artwork preview here.</p>
           )}
         </article>
       </div>

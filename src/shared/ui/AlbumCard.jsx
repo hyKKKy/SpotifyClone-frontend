@@ -1,4 +1,4 @@
-export default function AlbumCard({ album, resolveBackendUrl }) {
+export default function AlbumCard({ action = null, album, resolveBackendUrl }) {
   const coverUrl = album.coverUrl ? resolveBackendUrl(album.coverUrl) : null;
 
   return (
@@ -11,6 +11,7 @@ export default function AlbumCard({ album, resolveBackendUrl }) {
         <p className="media-card__subtitle">{album.artist}</p>
         <p className="media-card__meta">{album.releaseDate}</p>
       </div>
+      {action ? <div className="media-card__actions">{action}</div> : null}
     </article>
   );
 }

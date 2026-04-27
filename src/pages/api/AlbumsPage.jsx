@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
 import AlbumCard from '../../shared/ui/AlbumCard';
@@ -6,11 +6,32 @@ import EmptyStateCard from '../../shared/ui/EmptyStateCard';
 import SectionHeading from '../../shared/ui/SectionHeading';
 
 export default function AlbumsPage() {
-  const { catalog, isAdmin, resolveBackendUrl } = useContext(AppContext);
+  const { catalog, isAdmin, refreshCatalog, request, resolveBackendUrl } = useContext(AppContext);
+  const [deletingAlbumId, setDeletingAlbumId] = useState(null);
+  const [operationError, setOperationError] = useState('');
+
+  const handleDeleteAlbum = async (album) => {
+    if (!window.confirm(`Delete "${album.title}"?`)) {
+      return;
+    }
+
+    setDeletingAlbumId(album.id);
+    setOperationError('');
+
+    try {
+      await request(`/api/albums/delete/${album.id}`, { method: 'DELETE' });
+      await refreshCatalog();
+    } catch (requestError) {
+      setOperationError(requestError.message);
+    } finally {
+      setDeletingAlbumId(null);
+    }
+  };
 
   return (
     <section className="music-page page-shell">
       {catalog.error ? <div className="status-banner status-banner--error">{catalog.error}</div> : null}
+      {operationError ? <div className="status-banner status-banner--error">{operationError}</div> : null}
 
       <section className="content-block">
         <SectionHeading
@@ -31,7 +52,28 @@ export default function AlbumsPage() {
         ) : catalog.albums.length ? (
           <div className="album-wall">
             {catalog.albums.map((album) => (
-              <AlbumCard album={album} key={album.id} resolveBackendUrl={resolveBackendUrl} />
+              <AlbumCard
+                action={
+                  isAdmin ? (
+                    <div className="button-row media-card__button-row">
+                      <Link className="button button-secondary" to={`/albums/${album.id}/edit`}>
+                        Edit
+                      </Link>
+                      <button
+                        className="button button-danger"
+                        disabled={deletingAlbumId === album.id}
+                        onClick={() => void handleDeleteAlbum(album)}
+                        type="button"
+                      >
+                        {deletingAlbumId === album.id ? 'Deleting...' : 'Delete'}
+                      </button>
+                    </div>
+                  ) : null
+                }
+                album={album}
+                key={album.id}
+                resolveBackendUrl={resolveBackendUrl}
+              />
             ))}
           </div>
         ) : (

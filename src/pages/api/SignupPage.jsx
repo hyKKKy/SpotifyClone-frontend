@@ -36,8 +36,6 @@ export default function SignupPage() {
 
     if (!passwordValue) {
       nextErrors.password = 'Password is required.';
-    } else if (passwordValue.length < 6) {
-      nextErrors.password = 'Password must be at least 6 characters.';
     }
 
     return nextErrors;
@@ -134,7 +132,6 @@ export default function SignupPage() {
                 aria-describedby={fieldErrors.password ? 'signup-password-error' : undefined}
                 aria-invalid={Boolean(fieldErrors.password)}
                 id="signup-password"
-                minLength={6}
                 name="password"
                 required
                 type="password"

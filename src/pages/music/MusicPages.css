@@ -150,6 +150,22 @@
   gap: 0.35rem;
 }
 
+.media-card__actions {
+  align-self: end;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.media-card__button-row {
+  gap: 0.55rem;
+}
+
+.media-card__button-row .button {
+  flex: 1 1 96px;
+  justify-content: center;
+  min-height: 2.65rem;
+}
+
 .media-card__body h3 {
   margin: 0;
 }

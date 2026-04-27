@@ -29,9 +29,14 @@ export default function AdminPanel() {
           <p className="eyebrow">Publish release</p>
           <strong>Add a new album</strong>
           <p>Create an album entry, upload cover art, and push it straight into the home and library views.</p>
-          <Link className="button button-primary" to="/albums/add">
-            Open album form
-          </Link>
+          <div className="button-row">
+            <Link className="button button-primary" to="/albums/add">
+              Add album
+            </Link>
+            <Link className="button button-secondary" to="/albums">
+              Manage albums
+            </Link>
+          </div>
         </article>
 
         <article className="surface-card studio-card">

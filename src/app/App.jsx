@@ -152,21 +152,22 @@ function App() {
 
   const request = useCallback(
     async (path, options = {}) => {
+      const { skipAuth = false, ...fetchOptions } = options;
       const requestUrl = resolveBackendUrl(path);
-      const headers = new Headers(options.headers || {});
-      let body = options.body;
+      const headers = new Headers(fetchOptions.headers || {});
+      let body = fetchOptions.body;
 
       if (!(body instanceof FormData) && body && typeof body !== 'string') {
         headers.set('Content-Type', 'application/json');
         body = JSON.stringify(body);
       }
 
-      if (auth.token) {
+      if (!skipAuth && auth.token) {
         headers.set('Authorization', `Bearer ${auth.token}`);
       }
 
       const response = await fetch(requestUrl, {
-        ...options,
+        ...fetchOptions,
         body,
         credentials: 'include',
         headers,
@@ -239,6 +240,7 @@ function App() {
       const payload = await request('/api/user/login', {
         body: { login: userLogin, password },
         method: 'POST',
+        skipAuth: true,
       });
 
       setAuth(buildAuthState(payload, { login: userLogin }));
@@ -253,6 +255,7 @@ function App() {
       const payload = await request('/api/user/signup', {
         body: formValues,
         method: 'POST',
+        skipAuth: true,
       });
 
       setAuth(buildAuthState(payload, formValues));
@@ -316,6 +319,14 @@ function App() {
             />
             <Route
               path="albums/add"
+              element={
+                <AdminOnlyRoute>
+                  <AddAlbumPage />
+                </AdminOnlyRoute>
+              }
+            />
+            <Route
+              path="albums/:albumId/edit"
               element={
                 <AdminOnlyRoute>
                   <AddAlbumPage />
