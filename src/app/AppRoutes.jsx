@@ -15,6 +15,7 @@ import ArtistDetailPage from '../pages/library/ArtistDetailPage';
 import ArtistsPage from '../pages/library/ArtistsPage';
 import LibraryPage from '../pages/library/LibraryPage';
 import ProfilePage from '../pages/profile/ProfilePage';
+import SearchPage from '../pages/search/SearchPage';
 import NotFoundPage from '../pages/status/NotFoundPage';
 import AdminOnlyRoute from '../shared/ui/AdminOnlyRoute';
 import Layout from '../widgets/layout/Layout';
@@ -29,6 +30,7 @@ export default function AppRoutes() {
         <Route path="tracks" element={<TracksPage />} />
         <Route path="artists" element={<ArtistsPage />} />
         <Route path="artists/:artistId" element={<ArtistDetailPage />} />
+        <Route path="search" element={<SearchPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route
           path="studio"

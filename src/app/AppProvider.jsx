@@ -14,6 +14,7 @@ import usePlayer from './usePlayer';
 
 export default function AppProvider({ children }) {
   const [auth, setAuthState] = useState(readStoredAuth);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const setAuth = useCallback((nextValue) => {
     setAuthState((currentValue) =>
@@ -80,10 +81,25 @@ export default function AppProvider({ children }) {
       refreshCatalog,
       request,
       resolveBackendUrl,
+      searchQuery,
       setAuth,
+      setSearchQuery,
       signup,
     }),
-    [auth, catalog, isAdmin, isAuthenticated, login, logout, player, refreshCatalog, request, setAuth, signup],
+    [
+      auth,
+      catalog,
+      isAdmin,
+      isAuthenticated,
+      login,
+      logout,
+      player,
+      refreshCatalog,
+      request,
+      searchQuery,
+      setAuth,
+      signup,
+    ],
   );
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;

@@ -1,12 +1,21 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Music } from 'lucide-react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
 import './ui/LayoutHeader.css';
 
 export default function LayoutHeader() {
-  const { auth, isAdmin, isAuthenticated, logout } = useContext(AppContext);
+  const { auth, isAdmin, isAuthenticated, logout, searchQuery, setSearchQuery } = useContext(AppContext);
+  const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const urlSearchQuery = searchParams.get('q') || '';
+
+  useEffect(() => {
+    if (location.pathname === '/search') {
+      setSearchQuery(urlSearchQuery);
+    }
+  }, [location.pathname, setSearchQuery, urlSearchQuery]);
 
   const handleHeaderLogout = async () => {
     try {
@@ -15,6 +24,20 @@ export default function LayoutHeader() {
     } catch {
       navigate('/auth/logout');
     }
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+
+    const nextQuery = searchQuery.trim();
+    setSearchQuery(nextQuery);
+
+    if (!nextQuery) {
+      navigate('/browse');
+      return;
+    }
+
+    navigate(`/search?q=${encodeURIComponent(nextQuery)}`);
   };
 
   return (
@@ -29,8 +52,14 @@ export default function LayoutHeader() {
         </span>
       </NavLink>
 
-      <form className="spotify-header__search" role="search" onSubmit={(event) => event.preventDefault()}>
-        <input aria-label="Search" placeholder="Search" type="search" />
+      <form className="spotify-header__search" role="search" onSubmit={handleSearchSubmit}>
+        <input
+          aria-label="Search"
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder="Search albums, artists, tracks"
+          type="search"
+          value={searchQuery}
+        />
       </form>
 
       <div className="spotify-header__left">
