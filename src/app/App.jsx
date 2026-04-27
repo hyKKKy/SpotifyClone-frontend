@@ -15,11 +15,12 @@ import ProfilePage from '../pages/profile/ProfilePage';
 import SignupPage from '../pages/api/SignupPage';
 import StorageItemPage from '../pages/api/StorageItemPage';
 import StorageUploadPage from '../pages/api/StorageUploadPage';
+import TracksPage from '../pages/api/TracksPage';
 import AdminPanel from '../pages/adminPanel/AdminPanel';
 import Home from '../pages/home/Home';
 import NotFoundPage from '../pages/status/NotFoundPage';
 import { extractApiMessage, normalizePayload, resolveBackendUrl } from '../shared/api/http';
-import { buildArtistsFromAlbums, normalizeAlbums, normalizeTracks } from '../shared/music/catalog';
+import { buildArtistsFromAlbums, normalizeAlbums, normalizeGenres, normalizeTracks } from '../shared/music/catalog';
 import AdminOnlyRoute from '../shared/ui/AdminOnlyRoute';
 import Layout from '../widgets/layout/Layout';
 
@@ -136,6 +137,7 @@ function App() {
     albums: [],
     artists: [],
     error: '',
+    genres: [],
     isLoading: true,
     tracks: [],
   });
@@ -204,7 +206,15 @@ function App() {
       const payload = await request('/api/albums');
       const albums = normalizeAlbums(payload.data);
       const artists = buildArtistsFromAlbums(albums);
+      let genres = [];
       let tracks = [];
+
+      try {
+        const genresPayload = await request('/api/genres');
+        genres = normalizeGenres(genresPayload.data || genresPayload);
+      } catch {
+        genres = [];
+      }
 
       try {
         const tracksPayload = await request('/api/tracks');
@@ -217,6 +227,7 @@ function App() {
         albums,
         artists,
         error: '',
+        genres,
         isLoading: false,
         tracks,
       });
@@ -225,6 +236,7 @@ function App() {
         albums: [],
         artists: [],
         error: requestError.message,
+        genres: [],
         isLoading: false,
         tracks: [],
       });
@@ -299,6 +311,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="browse" element={<LibraryPage />} />
             <Route path="albums" element={<AlbumsPage />} />
+            <Route path="tracks" element={<TracksPage />} />
             <Route path="artists" element={<ArtistsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route
@@ -335,6 +348,14 @@ function App() {
             />
             <Route
               path="tracks/add"
+              element={
+                <AdminOnlyRoute>
+                  <AddTrackPage />
+                </AdminOnlyRoute>
+              }
+            />
+            <Route
+              path="tracks/:trackId/edit"
               element={
                 <AdminOnlyRoute>
                   <AddTrackPage />

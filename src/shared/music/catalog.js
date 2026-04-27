@@ -25,12 +25,26 @@ export function normalizeTracks(items = []) {
   return [...(Array.isArray(items) ? items : [])]
     .map((item, index) => ({
       albumId: item.albumId ?? item.album?.id ?? null,
+      albumTitle: item.albumTitle || item.album?.title || '',
       artist: item.artist || item.album?.artist || 'Unknown artist',
+      duration: item.duration || '',
+      genreId: item.genreId ?? item.genre?.id ?? null,
+      genreName: item.genreName || item.genre?.name || '',
       id: item.id ?? index,
+      likesCount: item.likesCount ?? 0,
       title: item.title || item.name || 'Untitled track',
       url: item.url || item.trackUrl || item.fileUrl || '',
     }))
     .sort((left, right) => Number(right.id) - Number(left.id));
+}
+
+export function normalizeGenres(items = []) {
+  return [...(Array.isArray(items) ? items : [])]
+    .map((item, index) => ({
+      id: item.id ?? index,
+      name: item.name || 'Uncategorized',
+    }))
+    .sort((left, right) => left.name.localeCompare(right.name));
 }
 
 export function buildArtistsFromAlbums(albums) {

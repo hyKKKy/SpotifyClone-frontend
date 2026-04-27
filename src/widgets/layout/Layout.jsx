@@ -79,7 +79,9 @@ export default function Layout() {
               <div className="sidebar-tracks__header">
                 <div>
                   <p className="eyebrow">Library</p>
-                  <strong>Tracks</strong>
+                  <NavLink className="sidebar-tracks__title" to="/tracks">
+                    Tracks
+                  </NavLink>
                 </div>
                 <span>{catalog.tracks.length}</span>
               </div>

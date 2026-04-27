@@ -43,9 +43,14 @@ export default function AdminPanel() {
           <p className="eyebrow">Upload track</p>
           <strong>Add a new track</strong>
           <p>Attach a track to an existing album and upload the audio file through the current backend endpoint.</p>
-          <Link className="button button-primary" to="/tracks/add">
-            Open track form
-          </Link>
+          <div className="button-row">
+            <Link className="button button-primary" to="/tracks/add">
+              Add track
+            </Link>
+            <Link className="button button-secondary" to="/tracks">
+              Manage tracks
+            </Link>
+          </div>
         </article>
 
         <article className="surface-card studio-card">
