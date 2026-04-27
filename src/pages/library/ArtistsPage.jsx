@@ -3,6 +3,7 @@ import AppContext from '../../features/context/AppContext';
 import ArtistCard from '../../shared/ui/ArtistCard';
 import EmptyStateCard from '../../shared/ui/EmptyStateCard';
 import SectionHeading from '../../shared/ui/SectionHeading';
+import '../music/MusicPage.css';
 
 export default function ArtistsPage() {
   const { catalog, resolveBackendUrl } = useContext(AppContext);

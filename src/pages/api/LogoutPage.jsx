@@ -1,6 +1,8 @@
 import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
+import '../music/MusicPage.css';
+import '../status/StatusPages.css';
 
 export default function LogoutPage() {
   const { auth, isAuthenticated, logout } = useContext(AppContext);

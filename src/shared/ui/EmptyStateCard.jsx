@@ -1,3 +1,5 @@
+import './EmptyStateCard.css';
+
 export default function EmptyStateCard({ title, description }) {
   return (
     <article className="surface-card empty-panel">

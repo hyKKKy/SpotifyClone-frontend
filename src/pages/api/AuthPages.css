@@ -1,0 +1,48 @@
+.auth-layout {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+}
+
+.auth-layout--single {
+  grid-template-columns: minmax(280px, 460px);
+  justify-content: center;
+}
+
+.auth-form {
+  width: 100%;
+}
+
+.auth-form__heading {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.auth-form__heading h2 {
+  margin: 0;
+}
+
+.auth-benefits {
+  align-content: start;
+}
+
+.auth-benefits ul {
+  display: grid;
+  gap: 0.7rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.auth-benefits li {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+}
+
+@media (max-width: 1080px) {
+  .auth-layout {
+    grid-template-columns: 1fr;
+  }
+}

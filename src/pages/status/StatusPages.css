@@ -1,0 +1,7 @@
+.restricted-card {
+  max-width: 720px;
+}
+
+.restricted-card h2 {
+  margin: 0;
+}

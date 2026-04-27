@@ -5,6 +5,9 @@ import AlbumCard from '../../shared/ui/AlbumCard';
 import ArtistCard from '../../shared/ui/ArtistCard';
 import EmptyStateCard from '../../shared/ui/EmptyStateCard';
 import SectionHeading from '../../shared/ui/SectionHeading';
+import '../music/MusicPage.css';
+import '../music/ListenHero.css';
+import './LibraryPage.css';
 
 export default function LibraryPage() {
   const { catalog, isAdmin, resolveBackendUrl } = useContext(AppContext);

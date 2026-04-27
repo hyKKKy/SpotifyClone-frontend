@@ -1,3 +1,5 @@
+import './SectionHeading.css';
+
 export default function SectionHeading({ action = null, description, eyebrow, title }) {
   return (
     <div className="section-heading">

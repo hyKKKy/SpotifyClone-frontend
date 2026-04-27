@@ -4,6 +4,7 @@ import AppContext from '../../features/context/AppContext';
 import EmptyStateCard from '../../shared/ui/EmptyStateCard';
 import SectionHeading from '../../shared/ui/SectionHeading';
 import TrackCard from '../../shared/ui/TrackCard';
+import '../music/MusicPage.css';
 
 export default function TracksPage() {
   const { catalog, isAdmin, isAuthenticated, refreshCatalog, request, resolveBackendUrl } = useContext(AppContext);

@@ -1,13 +1,21 @@
+import { Link } from 'react-router-dom';
+import './MediaCard.css';
+
 export default function AlbumCard({ action = null, album, resolveBackendUrl }) {
   const coverUrl = album.coverUrl ? resolveBackendUrl(album.coverUrl) : null;
+  const albumUrl = `/albums/${album.id}`;
 
   return (
     <article className="media-card media-card--album">
-      <div className="media-card__cover">
+      <Link aria-label={`Open ${album.title}`} className="media-card__cover media-card__coverLink" to={albumUrl}>
         {coverUrl ? <img alt={album.title} src={coverUrl} /> : <span>No artwork yet</span>}
-      </div>
+      </Link>
       <div className="media-card__body">
-        <h3>{album.title}</h3>
+        <h3>
+          <Link className="media-card__titleLink" to={albumUrl}>
+            {album.title}
+          </Link>
+        </h3>
         <p className="media-card__subtitle">{album.artist}</p>
         <p className="media-card__meta">{album.releaseDate}</p>
       </div>

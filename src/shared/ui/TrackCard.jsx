@@ -1,10 +1,16 @@
+import { useContext } from 'react';
+import { Pause, Play } from 'lucide-react';
+import AppContext from '../../features/context/AppContext';
+import './TrackCard.css';
+
 export default function TrackCard({ action = null, resolveBackendUrl, track }) {
-  const trackUrl = track.url ? resolveBackendUrl(track.url) : '';
+  const { player } = useContext(AppContext);
+  const canPlay = Boolean(track.url && resolveBackendUrl(track.url));
+  const isActive = String(player.currentTrack?.id) === String(track.id);
 
   return (
-    <article className="track-card">
+    <article className={isActive ? 'track-card track-card--active' : 'track-card'}>
       <div className="track-card__main">
-        <div className="track-card__index">{track.id}</div>
         <div className="track-card__copy">
           <h3>{track.title}</h3>
           <p>{track.artist}</p>
@@ -16,7 +22,15 @@ export default function TrackCard({ action = null, resolveBackendUrl, track }) {
       </div>
 
       <div className="track-card__player">
-        {trackUrl ? <audio controls src={trackUrl} /> : <span>No audio file uploaded.</span>}
+        <button
+          className="track-card__playButton"
+          disabled={!canPlay}
+          onClick={() => (isActive ? player.togglePlay() : player.playTrack(track))}
+          type="button"
+        >
+          {isActive && player.isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
+          <span>{canPlay ? (isActive && player.isPlaying ? 'Pause' : 'Play') : 'No audio'}</span>
+        </button>
       </div>
 
       {action ? <div className="track-card__actions">{action}</div> : null}

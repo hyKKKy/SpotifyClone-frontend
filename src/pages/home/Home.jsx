@@ -6,6 +6,8 @@ import ArtistCard from '../../shared/ui/ArtistCard';
 import EmptyStateCard from '../../shared/ui/EmptyStateCard';
 import SectionHeading from '../../shared/ui/SectionHeading';
 
+import '../music/MusicPage.css';
+import '../music/ListenHero.css';
 import './Home.css';
 
 export default function Home() {

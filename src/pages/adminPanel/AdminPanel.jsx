@@ -1,6 +1,9 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
+import '../music/MusicPage.css';
+import '../music/ListenHero.css';
+import './AdminPanel.css';
 
 export default function AdminPanel() {
   const { catalog } = useContext(AppContext);
@@ -12,8 +15,7 @@ export default function AdminPanel() {
           <p className="eyebrow">Studio</p>
           <h2>Admin publishing stays separate from the listener experience.</h2>
           <p>
-            Use this studio area to add albums, upload tracks, and manage internal upload flows without exposing those
-            controls to regular users.
+            Use this studio area to add albums, upload tracks, and manage internal upload flows.
           </p>
         </div>
 
@@ -49,29 +51,6 @@ export default function AdminPanel() {
             </Link>
             <Link className="button button-secondary" to="/tracks">
               Manage tracks
-            </Link>
-          </div>
-        </article>
-
-        <article className="surface-card studio-card">
-          <p className="eyebrow">Utilities</p>
-          <strong>Storage tools</strong>
-          <p>Use the storage upload route when you need to inspect raw file handling outside the album and track flows.</p>
-          <Link className="button button-secondary" to="/storage/upload">
-            Open storage upload
-          </Link>
-        </article>
-
-        <article className="surface-card studio-card">
-          <p className="eyebrow">Listener app</p>
-          <strong>Check the public-facing views</strong>
-          <p>Hop back into the browsing experience to confirm how new releases and artists appear to regular users.</p>
-          <div className="button-row">
-            <Link className="button button-secondary" to="/browse">
-              Browse library
-            </Link>
-            <Link className="button button-secondary" to="/profile">
-              Open profile
             </Link>
           </div>
         </article>

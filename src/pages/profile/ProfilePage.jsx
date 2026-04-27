@@ -1,6 +1,8 @@
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
+import '../music/MusicPage.css';
+import './ProfilePage.css';
 
 export default function ProfilePage() {
   const { auth, isAdmin, isAuthenticated, logout } = useContext(AppContext);

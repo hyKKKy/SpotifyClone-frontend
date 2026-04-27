@@ -1,0 +1,31 @@
+.music-page {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.content-block {
+  display: grid;
+  gap: 1rem;
+}
+
+.album-wall,
+.artist-wall,
+.track-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.track-list {
+  grid-template-columns: 1fr;
+}
+
+.media-card__button-row {
+  gap: 0.55rem;
+}
+
+.media-card__button-row .button {
+  flex: 1 1 96px;
+  justify-content: center;
+  min-height: 2.65rem;
+}

@@ -1,0 +1,95 @@
+.media-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  display: grid;
+  gap: 0.9rem;
+  min-height: 100%;
+  padding: 1rem;
+}
+
+.media-card--album {
+  max-width: 200px;
+  width: 100%;
+}
+
+.media-card--album .media-card__cover {
+  aspect-ratio: auto;
+  height: 200px;
+  max-height: 200px;
+}
+
+.media-card__cover {
+  align-items: center;
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle at top right, rgba(30, 215, 96, 0.2), transparent 42%),
+    linear-gradient(160deg, rgba(18, 23, 21, 0.98), rgba(9, 12, 11, 0.98));
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.media-card__cover img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.media-card__coverLink {
+  color: var(--text-muted);
+}
+
+.media-card__coverLink:hover {
+  border-color: rgba(30, 215, 96, 0.3);
+}
+
+.media-card__cover span {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.media-card__cover--artist {
+  border-radius: 999px;
+  margin: 0 auto;
+  max-width: 150px;
+}
+
+.media-card__body {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.media-card__actions {
+  align-self: end;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.media-card__body h3 {
+  margin: 0;
+}
+
+.media-card__titleLink {
+  color: var(--text-strong);
+}
+
+.media-card__titleLink:hover {
+  color: var(--accent-soft);
+}
+
+.media-card__subtitle,
+.media-card__meta {
+  margin: 0;
+}
+
+.media-card__subtitle {
+  color: var(--text-strong);
+}
+
+.media-card__meta {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}

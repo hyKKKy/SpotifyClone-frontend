@@ -1,0 +1,25 @@
+.profile-simple {
+  min-height: min(560px, calc(100vh - 12rem));
+}
+
+.profile-simple__greeting {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.profile-simple__greeting h2 {
+  font-size: clamp(2rem, 4vw, 4rem);
+  line-height: 1;
+  margin: 0;
+}
+
+.profile-simple__greeting p:last-child {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.profile-simple__bottom {
+  align-self: end;
+  display: flex;
+  justify-content: flex-start;
+}

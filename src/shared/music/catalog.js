@@ -3,6 +3,16 @@ function parseDateValue(value) {
   return Number.isNaN(timestamp) ? 0 : timestamp;
 }
 
+function buildArtistId(value) {
+  return (
+    value
+      ?.trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'unknown-artist'
+  );
+}
+
 export function getReleaseYear(value) {
   const timestamp = parseDateValue(value);
   return timestamp ? new Date(timestamp).getFullYear() : 'Unknown';
@@ -57,7 +67,7 @@ export function buildArtistsFromAlbums(albums) {
       albumCount: 0,
       albums: [],
       coverUrl: '',
-      id: artistKey,
+      id: buildArtistId(artistName),
       latestRelease: album.releaseDate,
       name: artistName,
     };

@@ -1,6 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import AppContext from '../../features/context/AppContext';
+import '../music/MusicPage.css';
+import '../music/ListenHero.css';
 
 const todayInputValue = () => new Date().toISOString().slice(0, 10);
 
