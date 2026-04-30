@@ -10,7 +10,6 @@ import TracksPage from '@pages/tracks/TracksPage';
 import StorageItemPage from '@pages/storage/StorageItemPage';
 import StorageUploadPage from '@pages/storage/StorageUploadPage';
 import AdminPanel from '@pages/admin/AdminPanel';
-import GenresPage from '@pages/genres/GenresPage';
 import Home from '@pages/home/Home';
 import ArtistDetailPage from '@pages/library/ArtistDetailPage';
 import ArtistsPage from '@pages/library/ArtistsPage';
@@ -31,7 +30,7 @@ export default function AppRoutes() {
         <Route path="tracks" element={<TracksPage />} />
         <Route path="artists" element={<ArtistsPage />} />
         <Route path="artists/:artistId" element={<ArtistDetailPage />} />
-        <Route path="genres" element={<GenresPage />} />
+
         <Route path="search" element={<SearchPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route

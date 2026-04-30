@@ -19,22 +19,6 @@ export default function LibraryPage() {
           <h2>Albums and artists, together in one library view.</h2>
           <p>Move between fresh releases and the artists behind them without leaving the page.</p>
         </div>
-
-        <div className="surface-card hero-summary">
-          <p className="eyebrow">Collection</p>
-          <strong>{catalog.albums.length} releases</strong>
-          <span>
-            {catalog.artists.length} artists and {catalog.genres.length} genres in rotation.
-          </span>
-          {isAdmin ? (
-            <Link className="button button-primary" to="/studio">
-              Go to studio
-            </Link>
-          ) : null}
-          <Link className="button button-secondary" to="/genres">
-            Browse genres
-          </Link>
-        </div>
       </div>
 
       {catalog.error ? <div className="status-banner status-banner--error">{catalog.error}</div> : null}

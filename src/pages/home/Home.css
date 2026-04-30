@@ -2,6 +2,10 @@
   display: block;
 }
 
+.listen-hero__copy {
+  margin-bottom: 2%;
+}
+
 .hero-stack {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
