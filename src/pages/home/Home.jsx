@@ -36,25 +36,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="hero-stack">
-          <article className="surface-card hero-metric">
-            <p className="eyebrow">Albums</p>
-            <strong>{catalog.albums.length}</strong>
-            <span>{catalog.albums.length ? 'Fresh releases in your library.' : 'No albums yet.'}</span>
-          </article>
-
-          <article className="surface-card hero-metric">
-            <p className="eyebrow">Artists</p>
-            <strong>{catalog.artists.length}</strong>
-            <span>{catalog.artists.length ? 'Artists waiting for another spin.' : 'No artists yet.'}</span>
-          </article>
-
-          <article className="surface-card hero-metric">
-            <p className="eyebrow">Access</p>
-            <strong style={{fontSize: '1.5rem'}}>{isAdmin ? 'Admin' : isAuthenticated ? 'Listener' : 'Guest'}</strong>
-            <span>{isAdmin ? 'Your studio shortcuts are ready.' : 'Settle in and explore.'}</span>
-          </article>
-        </div>
+        
       </div>
 
       {catalog.error ? <div className="status-banner status-banner--error">{catalog.error}</div> : null}

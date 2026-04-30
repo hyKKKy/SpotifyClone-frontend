@@ -27,6 +27,7 @@
   display: flex;
   justify-content: center;
   min-width: 0;
+  position: relative;
 }
 
 .spotify-header__search input {
@@ -39,6 +40,15 @@
   min-height: 2.9rem;
   padding: 0 1.1rem 0 2.8rem;
   width: 100%;
+}
+
+.spotify-header__searchIcon {
+  color: var(--text-muted);
+  left: calc(50% - min(18rem, 50%) + 1rem);
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .spotify-header__search input::placeholder {
@@ -111,6 +121,10 @@
 
   .spotify-header__search input {
     min-height: 2.6rem;
-    padding-left: 1rem;
+    padding-left: 2.8rem;
+  }
+
+  .spotify-header__searchIcon {
+    left: 1rem;
   }
 }

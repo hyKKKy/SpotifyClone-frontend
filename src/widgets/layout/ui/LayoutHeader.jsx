@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Music } from 'lucide-react';
+import { Music, Search } from 'lucide-react';
 import { NavLink, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppContext } from '@shared/lib/app-context';
 import './LayoutHeader.css';
@@ -53,6 +53,7 @@ export default function LayoutHeader() {
       </NavLink>
 
       <form className="spotify-header__search" role="search" onSubmit={handleSearchSubmit}>
+        <Search aria-hidden="true" className="spotify-header__searchIcon" size={18} />
         <input
           aria-label="Search"
           onChange={(event) => setSearchQuery(event.target.value)}
