@@ -1,0 +1,153 @@
+.spotify-sidebar {
+  display: grid;
+
+  min-width: 0;
+}
+
+.sidebar-panel {
+  background:
+    linear-gradient(180deg, rgba(19, 24, 22, 0.96), rgba(8, 11, 10, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 26px;
+  display: flex;
+  flex-direction: column;
+  max-height: fit-content;
+  padding: 1.2rem;
+}
+
+.sidebar-tracks {
+  gap: 0.9rem;
+  padding: 1rem;
+}
+
+.sidebar-tracks__header {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.sidebar-tracks__title {
+  color: var(--text-strong);
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.sidebar-tracks__title:hover {
+  color: var(--accent-soft);
+}
+
+
+.sidebar-tracks__header span {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  color: var(--text-soft);
+  display: inline-flex;
+  font-size: 0.85rem;
+  font-weight: 700;
+  height: 2rem;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0 0.65rem;
+}
+
+.sidebar-track-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.sidebar-track {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text-soft);
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  gap: 0.6rem;
+  grid-template-columns: 1.4rem 2rem minmax(0, 1fr);
+  min-height: 3rem;
+  padding: 0.35rem 0.45rem;
+  text-align: left;
+  transition: background-color 0.18s ease, color 0.18s ease;
+  width: 100%;
+}
+
+.sidebar-track:hover,
+.sidebar-track--active {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-strong);
+}
+
+.sidebar-track--active .sidebar-track__play {
+  background: rgba(30, 215, 96, 0.24);
+  color: var(--accent-soft);
+}
+
+.sidebar-track:disabled {
+  cursor: default;
+  opacity: 0.48;
+}
+
+.sidebar-track__index {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.sidebar-track__play {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  width: 2rem;
+}
+
+.sidebar-track__meta {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.sidebar-track__meta strong,
+.sidebar-track__meta small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-track__meta strong {
+  color: var(--text-strong);
+  font-size: 0.92rem;
+}
+
+.sidebar-track__meta small {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.sidebar-tracks__empty {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  color: var(--text-muted);
+  margin: 0;
+  padding: 0.95rem;
+}
+
+@media (max-width: 1080px) {
+  .spotify-sidebar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .spotify-sidebar {
+    grid-template-columns: 1fr;
+  }
+}

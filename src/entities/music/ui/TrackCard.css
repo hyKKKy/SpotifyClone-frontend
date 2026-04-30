@@ -1,0 +1,137 @@
+.track-card {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.9fr) auto;
+  padding: 1rem;
+}
+
+.track-card--active {
+  border-color: rgba(30, 215, 96, 0.28);
+}
+
+.track-card__main {
+  align-items: center;
+  display: flex;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.track-card__index {
+  align-items: center;
+  background: rgba(30, 215, 96, 0.15);
+  border: 1px solid rgba(30, 215, 96, 0.24);
+  border-radius: 999px;
+  color: var(--accent-soft);
+  display: flex;
+  flex: 0 0 2.4rem;
+  font-weight: 800;
+  height: 2.4rem;
+  justify-content: center;
+}
+
+.track-card__copy {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.track-card__copy h3,
+.track-card__copy p,
+.track-card__copy span {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track-card__copy p {
+  color: var(--text-strong);
+}
+
+.track-card__copy span,
+.track-card__player span {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.track-card__player {
+  align-items: center;
+  display: flex;
+  gap: 0.65rem;
+}
+
+.track-card__likeButton {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 2.75rem;
+  height: 2.75rem;
+  justify-content: center;
+}
+
+.track-card__likeButton:hover:not(:disabled),
+.track-card__likeButton--active {
+  background: rgba(30, 215, 96, 0.16);
+  border-color: rgba(30, 215, 96, 0.3);
+  color: var(--accent-soft);
+}
+
+.track-card__likeButton:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.track-card__playButton {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: var(--text-strong);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 800;
+  gap: 0.45rem;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  width: min(100%, 180px);
+}
+
+.track-card--active .track-card__playButton,
+.track-card__playButton:hover:not(:disabled) {
+  background: rgba(30, 215, 96, 0.18);
+  border-color: rgba(30, 215, 96, 0.3);
+  color: var(--accent-soft);
+}
+
+.track-card__playButton:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.track-card__actions {
+  min-width: 180px;
+}
+
+@media (max-width: 960px) {
+  .track-card {
+    grid-template-columns: 1fr;
+  }
+
+  .track-card__actions {
+    min-width: 0;
+  }
+
+  .track-card__player {
+    justify-content: flex-start;
+  }
+}

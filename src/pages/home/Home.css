@@ -1,0 +1,21 @@
+.listen-hero{
+  display: block;
+}
+
+.listen-hero__copy {
+  margin-bottom: 2%;
+}
+
+.hero-stack {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.hero-metric {
+  min-height: 150px;
+}
+
+@media (max-width: 1080px) {
+  .hero-stack {
+    grid-template-columns: 1fr;
+  }
+}

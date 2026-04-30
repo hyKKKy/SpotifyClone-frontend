@@ -1,0 +1,119 @@
+.button {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.96rem;
+  font-weight: 700;
+  gap: 0.5rem;
+  justify-content: center;
+  min-height: 2.8rem;
+  padding: 0.7rem 1.35rem;
+  text-decoration: none;
+  transition: transform 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button-primary {
+  background: linear-gradient(135deg, #1ed760, #1db954);
+  color: #08110d;
+}
+
+.button-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-strong);
+}
+
+.surface-card {
+  backdrop-filter: blur(14px);
+  background:
+    linear-gradient(180deg, rgba(21, 26, 24, 0.9), rgba(11, 15, 14, 0.94));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+  color: var(--text-soft);
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.surface-card h2,
+.surface-card h3 {
+  color: var(--text-strong);
+  margin: 0;
+}
+
+.page-shell {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.page-hero {
+  background:
+    radial-gradient(circle at top right, rgba(30, 215, 96, 0.28), transparent 36%),
+    linear-gradient(145deg, rgba(22, 26, 24, 0.97), rgba(9, 12, 11, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  display: grid;
+  gap: 0.9rem;
+  padding: 2rem;
+}
+
+.page-hero h1 {
+  font-size: clamp(2rem, 3vw, 3.2rem);
+  margin: 0;
+}
+
+.page-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.method-badge {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  justify-content: center;
+  letter-spacing: 0;
+  min-height: 2rem;
+  padding: 0.3rem 0.75rem;
+  width: fit-content;
+}
+
+.method-badge--GET {
+  background: rgba(77, 208, 225, 0.16);
+  color: #8de7f5;
+}
+
+.method-badge--POST {
+  background: rgba(30, 215, 96, 0.16);
+  color: #88f0a8;
+}
+
+.eyebrow {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.action-link {
+  color: var(--accent-soft);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.inline-note {
+  color: var(--text-muted);
+  font-size: 0.94rem;
+}

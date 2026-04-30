@@ -1,0 +1,130 @@
+.spotify-header {
+  align-items: center;
+  background: rgba(5, 8, 7, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: auto minmax(280px, 1fr) auto;
+  padding: 1rem 1.25rem;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 20;
+}
+
+.spotify-header__left {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.spotify-header__button {
+  min-height: 2.5rem;
+  padding-inline: 1rem;
+}
+
+.spotify-header__search {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  position: relative;
+}
+
+.spotify-header__search input {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  color: var(--text-strong);
+  font: inherit;
+  max-width: 36rem;
+  min-height: 2.9rem;
+  padding: 0 1.1rem 0 2.8rem;
+  width: 100%;
+}
+
+.spotify-header__searchIcon {
+  color: var(--text-muted);
+  left: calc(50% - min(18rem, 50%) + 1rem);
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.spotify-header__search input::placeholder {
+  color: var(--text-muted);
+}
+
+.spotify-header__search input:focus {
+  border-color: rgba(30, 215, 96, 0.45);
+  box-shadow: 0 0 0 3px rgba(30, 215, 96, 0.12);
+  outline: none;
+}
+
+.spotify-header__brand {
+  align-items: center;
+  color: var(--text-strong);
+  display: inline-flex;
+  gap: 0.8rem;
+  justify-self: end;
+}
+
+.spotify-header__brandMark {
+  align-items: center;
+  background: linear-gradient(135deg, #1ed760, #0f6a38);
+  border-radius: 999px;
+  color: #07110b;
+  display: inline-flex;
+  height: 2.4rem;
+  justify-content: center;
+  width: 2.4rem;
+}
+
+.spotify-header__brandText {
+  align-items: flex-start;
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.spotify-header__brandText strong {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.spotify-header__brandText small {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 1080px) {
+  .spotify-header {
+    grid-template-columns: 1fr;
+  }
+
+  .spotify-header__brand {
+    justify-self: start;
+    order: -1;
+  }
+}
+
+@media (max-width: 860px) {
+  .spotify-header__left {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .spotify-header {
+    padding: 0.85rem;
+  }
+
+  .spotify-header__search input {
+    min-height: 2.6rem;
+    padding-left: 2.8rem;
+  }
+
+  .spotify-header__searchIcon {
+    left: 1rem;
+  }
+}

@@ -1,0 +1,27 @@
+.section-heading {
+  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.section-heading__copy {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.section-heading__copy h2 {
+  margin: 0;
+}
+
+.section-heading__copy p:last-child {
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 65ch;
+}
+
+.section-link {
+  color: var(--accent-soft);
+  font-weight: 700;
+}
