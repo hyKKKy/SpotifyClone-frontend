@@ -1,8 +1,8 @@
 import { BrowserRouter } from 'react-router-dom';
-import './ui/App.css';
-import '../pages/api/ApiPages.css';
-import AppProvider from './AppProvider';
-import AppRoutes from './AppRoutes';
+import '@app/styles/App.css';
+import '@shared/styles/api-pages.css';
+import AppProvider from '@app/providers/AppProvider';
+import AppRoutes from '@app/router/AppRoutes';
 
 function App() {
   return (

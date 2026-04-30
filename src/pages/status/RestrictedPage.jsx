@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import '../music/MusicPage.css';
+import '@shared/styles/music-page.css';
 import './StatusPages.css';
 
 export default function RestrictedPage() {

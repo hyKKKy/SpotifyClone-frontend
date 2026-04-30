@@ -1,12 +1,12 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import AppContext from '../../features/context/AppContext';
-import AlbumCard from '../../shared/ui/AlbumCard';
-import ArtistCard from '../../shared/ui/ArtistCard';
-import EmptyStateCard from '../../shared/ui/EmptyStateCard';
-import SectionHeading from '../../shared/ui/SectionHeading';
-import TrackCard from '../../shared/ui/TrackCard';
-import '../music/MusicPage.css';
+import { useAppContext } from '@shared/lib/app-context';
+import AlbumCard from '@entities/music/ui/AlbumCard';
+import ArtistCard from '@entities/music/ui/ArtistCard';
+import EmptyStateCard from '@shared/ui/EmptyStateCard';
+import SectionHeading from '@shared/ui/SectionHeading';
+import TrackCard from '@entities/music/ui/TrackCard';
+import '@shared/styles/music-page.css';
 import './SearchPage.css';
 
 function matchesQuery(values, query) {
@@ -15,7 +15,7 @@ function matchesQuery(values, query) {
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
-  const { catalog, isAuthenticated, resolveBackendUrl, searchQuery } = useContext(AppContext);
+  const { catalog, isAuthenticated, resolveBackendUrl, searchQuery } = useAppContext();
   const activeQuery = (searchParams.get('q') || searchQuery).trim();
   const normalizedQuery = activeQuery.toLowerCase();
 

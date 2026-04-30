@@ -1,15 +1,15 @@
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import AppContext from '../../features/context/AppContext';
-import AlbumCard from '../../shared/ui/AlbumCard';
-import EmptyStateCard from '../../shared/ui/EmptyStateCard';
-import SectionHeading from '../../shared/ui/SectionHeading';
-import '../music/MusicPage.css';
-import '../music/DetailHero.css';
+import { useAppContext } from '@shared/lib/app-context';
+import AlbumCard from '@entities/music/ui/AlbumCard';
+import EmptyStateCard from '@shared/ui/EmptyStateCard';
+import SectionHeading from '@shared/ui/SectionHeading';
+import '@shared/styles/music-page.css';
+import '@shared/styles/detail-hero.css';
 
 export default function ArtistDetailPage() {
   const { artistId } = useParams();
-  const { catalog, isAdmin, resolveBackendUrl } = useContext(AppContext);
+  const { catalog, isAdmin, resolveBackendUrl } = useAppContext();
   const artist = useMemo(
     () => catalog.artists.find((catalogArtist) => String(catalogArtist.id) === String(artistId)),
     [artistId, catalog.artists],

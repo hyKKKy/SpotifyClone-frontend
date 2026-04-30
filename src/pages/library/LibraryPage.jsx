@@ -1,16 +1,15 @@
-import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import AppContext from '../../features/context/AppContext';
-import AlbumCard from '../../shared/ui/AlbumCard';
-import ArtistCard from '../../shared/ui/ArtistCard';
-import EmptyStateCard from '../../shared/ui/EmptyStateCard';
-import SectionHeading from '../../shared/ui/SectionHeading';
-import '../music/MusicPage.css';
-import '../music/ListenHero.css';
+import { useAppContext } from '@shared/lib/app-context';
+import AlbumCard from '@entities/music/ui/AlbumCard';
+import ArtistCard from '@entities/music/ui/ArtistCard';
+import EmptyStateCard from '@shared/ui/EmptyStateCard';
+import SectionHeading from '@shared/ui/SectionHeading';
+import '@shared/styles/music-page.css';
+import '@shared/styles/listen-hero.css';
 import './LibraryPage.css';
 
 export default function LibraryPage() {
-  const { catalog, isAdmin, resolveBackendUrl } = useContext(AppContext);
+  const { catalog, isAdmin, resolveBackendUrl } = useAppContext();
 
   return (
     <section className="music-page page-shell">
@@ -24,12 +23,17 @@ export default function LibraryPage() {
         <div className="surface-card hero-summary">
           <p className="eyebrow">Collection</p>
           <strong>{catalog.albums.length} releases</strong>
-          <span>{catalog.artists.length} artists in rotation.</span>
+          <span>
+            {catalog.artists.length} artists and {catalog.genres.length} genres in rotation.
+          </span>
           {isAdmin ? (
             <Link className="button button-primary" to="/studio">
               Go to studio
             </Link>
           ) : null}
+          <Link className="button button-secondary" to="/genres">
+            Browse genres
+          </Link>
         </div>
       </div>
 
@@ -37,15 +41,15 @@ export default function LibraryPage() {
 
       <div className="library-layout">
         <section className="content-block">
-        <SectionHeading
-          eyebrow="All releases"
-          title="Albums"
-          description="The full release lineup in your library."
-        />
+          <SectionHeading
+            eyebrow="All releases"
+            title="Albums"
+            description="The full release lineup in your library."
+          />
 
-        {catalog.isLoading ? (
-          <EmptyStateCard title="Loading albums" description="Your releases are on the way." />
-        ) : catalog.albums.length ? (
+          {catalog.isLoading ? (
+            <EmptyStateCard title="Loading albums" description="Your releases are on the way." />
+          ) : catalog.albums.length ? (
             <div className="album-wall">
               {catalog.albums.map((album) => (
                 <AlbumCard album={album} key={album.id} resolveBackendUrl={resolveBackendUrl} />

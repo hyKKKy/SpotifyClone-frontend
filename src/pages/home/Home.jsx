@@ -1,17 +1,16 @@
-import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import AppContext from '../../features/context/AppContext';
-import AlbumCard from '../../shared/ui/AlbumCard';
-import ArtistCard from '../../shared/ui/ArtistCard';
-import EmptyStateCard from '../../shared/ui/EmptyStateCard';
-import SectionHeading from '../../shared/ui/SectionHeading';
+import { useAppContext } from '@shared/lib/app-context';
+import AlbumCard from '@entities/music/ui/AlbumCard';
+import ArtistCard from '@entities/music/ui/ArtistCard';
+import EmptyStateCard from '@shared/ui/EmptyStateCard';
+import SectionHeading from '@shared/ui/SectionHeading';
 
-import '../music/MusicPage.css';
-import '../music/ListenHero.css';
+import '@shared/styles/music-page.css';
+import '@shared/styles/listen-hero.css';
 import './Home.css';
 
 export default function Home() {
-  const { auth, catalog, isAdmin, isAuthenticated, resolveBackendUrl } = useContext(AppContext);
+  const { auth, catalog, isAdmin, isAuthenticated, resolveBackendUrl } = useAppContext();
   const featuredAlbums = catalog.albums.slice(0, 6);
   const featuredArtists = catalog.artists.slice(0, 6);
 

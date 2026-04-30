@@ -1,12 +1,11 @@
-import { useContext } from 'react';
-import AppContext from '../../features/context/AppContext';
-import ArtistCard from '../../shared/ui/ArtistCard';
-import EmptyStateCard from '../../shared/ui/EmptyStateCard';
-import SectionHeading from '../../shared/ui/SectionHeading';
-import '../music/MusicPage.css';
+import { useAppContext } from '@shared/lib/app-context';
+import ArtistCard from '@entities/music/ui/ArtistCard';
+import EmptyStateCard from '@shared/ui/EmptyStateCard';
+import SectionHeading from '@shared/ui/SectionHeading';
+import '@shared/styles/music-page.css';
 
 export default function ArtistsPage() {
-  const { catalog, resolveBackendUrl } = useContext(AppContext);
+  const { catalog, resolveBackendUrl } = useAppContext();
 
   return (
     <section className="music-page page-shell">

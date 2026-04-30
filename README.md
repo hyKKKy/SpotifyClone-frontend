@@ -1,16 +1,23 @@
-# React + Vite
+# Spotify Clone Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React/Vite frontend for a Spotify-style music library, player, auth flow, and admin studio.
 
-Currently, two official plugins are available:
+## Scripts
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `npm run dev` starts Vite.
+- `npm run build` creates a production build.
+- `npm run lint` runs ESLint.
+- `npm run preview` serves the production build locally.
 
-## React Compiler
+## Architecture
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The source tree uses a lightweight feature-sliced structure:
 
-## Expanding the ESLint configuration
+- `app` contains application composition: providers, routing, and app-level styles.
+- `pages` contains route screens only.
+- `widgets` contains larger layout blocks used by pages and the app shell.
+- `features` contains user-facing behaviors such as auth guards and player state.
+- `entities` contains music domain models and UI cards.
+- `shared` contains reusable infrastructure, styles, API helpers, and generic UI.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for folder rules and import boundaries.
