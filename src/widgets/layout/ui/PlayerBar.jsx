@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ListMusic,
-  MonitorSpeaker,
+  Heart,
   Music,
   Pause,
   Play,
-  Repeat,
   Shuffle,
   SkipBack,
   SkipForward,
@@ -25,7 +23,7 @@ function formatTime(value) {
 }
 
 export default function PlayerBar() {
-  const { player, resolveBackendUrl } = useAppContext();
+  const { isAuthenticated, likedTracks, player, resolveBackendUrl } = useAppContext();
   const audioRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -40,13 +38,13 @@ export default function PlayerBar() {
     previousTrack,
     setPlaying,
     togglePlay,
-    toggleRepeat,
     toggleShuffle,
   } = player;
   const currentTrackUrl = useMemo(
     () => (currentTrack?.url ? resolveBackendUrl(currentTrack.url) : ''),
     [currentTrack, resolveBackendUrl],
   );
+  const isCurrentTrackLiked = currentTrack ? likedTracks.isTrackLiked(currentTrack.id) : false;
   const progressPercent = duration ? Math.min(100, (currentTime / duration) * 100) : 0;
 
   useEffect(() => {
@@ -132,6 +130,29 @@ export default function PlayerBar() {
           <strong>{currentTrack?.title || 'No track selected'}</strong>
           <span>{currentTrack?.artist || 'Unknown Artist'}</span>
         </div>
+        <button
+          aria-label={
+            isCurrentTrackLiked
+              ? `Remove ${currentTrack?.title || 'current track'} from liked tracks`
+              : `Like ${currentTrack?.title || 'current track'}`
+          }
+          aria-pressed={isCurrentTrackLiked}
+          className={
+            isCurrentTrackLiked ? 'player-bar__like player-bar__like--active' : 'player-bar__like'
+          }
+          disabled={!isAuthenticated || !currentTrack}
+          onClick={() => likedTracks.toggleTrackLike(currentTrack)}
+          title={
+            !isAuthenticated
+              ? 'Sign in to like tracks'
+              : isCurrentTrackLiked
+                ? 'Unlike current track'
+                : 'Like current track'
+          }
+          type="button"
+        >
+          <Heart size={17} fill={isCurrentTrackLiked ? 'currentColor' : 'none'} />
+        </button>
       </div>
 
       <div className="player-bar__center">
@@ -172,15 +193,6 @@ export default function PlayerBar() {
           >
             <SkipForward size={18} fill="currentColor" />
           </button>
-          <button
-            aria-label="Repeat"
-            className={isRepeating ? 'player-bar__control player-bar__control--active' : 'player-bar__control'}
-            disabled={!hasTracks}
-            onClick={toggleRepeat}
-            type="button"
-          >
-            <Repeat size={17} />
-          </button>
         </div>
 
         <div className="player-bar__progress" aria-label="Playback progress">
@@ -193,12 +205,6 @@ export default function PlayerBar() {
       </div>
 
       <div className="player-bar__tools">
-        <button aria-label="Queue" className="player-bar__control" disabled type="button">
-          <ListMusic size={18} />
-        </button>
-        <button aria-label="Devices" className="player-bar__control" disabled type="button">
-          <MonitorSpeaker size={18} />
-        </button>
         <Volume2 size={18} />
         <input
           aria-label="Volume"

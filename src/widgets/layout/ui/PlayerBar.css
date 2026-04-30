@@ -60,6 +60,30 @@
   font-size: 0.82rem;
 }
 
+.player-bar__like {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 2rem;
+  height: 2rem;
+  justify-content: center;
+  margin-left: 0.2rem;
+  width: 2rem;
+}
+
+.player-bar__like:hover:not(:disabled),
+.player-bar__like--active {
+  color: var(--accent-soft);
+}
+
+.player-bar__like:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
 .player-bar__center {
   display: grid;
   gap: 0.55rem;

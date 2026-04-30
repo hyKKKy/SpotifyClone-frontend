@@ -49,11 +49,6 @@ export default function SearchPage() {
         <SectionHeading
           eyebrow="Search"
           title={activeQuery ? `Results for "${activeQuery}"` : 'Search your library'}
-          description={
-            activeQuery
-              ? `${totalResults} result${totalResults === 1 ? '' : 's'} found across albums, artists, and tracks.`
-              : 'Type in the header search field and press Enter.'
-          }
         />
 
         {catalog.isLoading ? (

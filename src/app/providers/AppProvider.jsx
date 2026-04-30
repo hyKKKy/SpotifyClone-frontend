@@ -10,6 +10,7 @@ import {
   readStoredAuth,
 } from '@features/auth/model/auth';
 import usePlayer from '@features/player/model/usePlayer';
+import useLikedTracks from '@features/liked-tracks/model/useLikedTracks';
 import useApiRequest, { resolveBackendUrl } from '@shared/api/useApiRequest';
 
 export default function AppProvider({ children }) {
@@ -33,6 +34,7 @@ export default function AppProvider({ children }) {
   const request = useApiRequest(auth.token, handleUnauthorized);
   const { catalog, refreshCatalog } = useCatalog(request);
   const player = usePlayer(catalog.tracks);
+  const likedTracks = useLikedTracks(auth, catalog.tracks);
 
   const login = useCallback(
     async ({ login: userLogin, password }) => {
@@ -81,6 +83,7 @@ export default function AppProvider({ children }) {
       isAuthenticated,
       login,
       logout,
+      likedTracks,
       player,
       refreshCatalog,
       request,
@@ -97,6 +100,7 @@ export default function AppProvider({ children }) {
       isAuthenticated,
       login,
       logout,
+      likedTracks,
       player,
       refreshCatalog,
       request,

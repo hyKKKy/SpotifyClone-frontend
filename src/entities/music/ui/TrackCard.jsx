@@ -1,11 +1,12 @@
-import { Pause, Play } from 'lucide-react';
+import { Heart, Pause, Play } from 'lucide-react';
 import { useAppContext } from '@shared/lib/app-context';
 import './TrackCard.css';
 
 export default function TrackCard({ action = null, resolveBackendUrl, track }) {
-  const { player } = useAppContext();
+  const { isAuthenticated, likedTracks, player } = useAppContext();
   const canPlay = Boolean(track.url && resolveBackendUrl(track.url));
   const isActive = String(player.currentTrack?.id) === String(track.id);
+  const isLiked = likedTracks.isTrackLiked(track.id);
 
   return (
     <article className={isActive ? 'track-card track-card--active' : 'track-card'}>
@@ -21,6 +22,17 @@ export default function TrackCard({ action = null, resolveBackendUrl, track }) {
       </div>
 
       <div className="track-card__player">
+        <button
+          aria-label={isLiked ? `Remove ${track.title} from liked tracks` : `Like ${track.title}`}
+          aria-pressed={isLiked}
+          className={isLiked ? 'track-card__likeButton track-card__likeButton--active' : 'track-card__likeButton'}
+          disabled={!isAuthenticated}
+          onClick={() => likedTracks.toggleTrackLike(track)}
+          title={isAuthenticated ? (isLiked ? 'Unlike track' : 'Like track') : 'Sign in to like tracks'}
+          type="button"
+        >
+          <Heart size={17} fill={isLiked ? 'currentColor' : 'none'} />
+        </button>
         <button
           className="track-card__playButton"
           disabled={!canPlay}

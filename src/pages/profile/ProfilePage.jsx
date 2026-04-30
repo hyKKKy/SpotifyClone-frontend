@@ -1,10 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '@shared/lib/app-context';
+import TrackCard from '@entities/music/ui/TrackCard';
+import EmptyStateCard from '@shared/ui/EmptyStateCard';
+import SectionHeading from '@shared/ui/SectionHeading';
 import '@shared/styles/music-page.css';
 import './ProfilePage.css';
 
 export default function ProfilePage() {
-  const { auth, isAdmin, isAuthenticated, logout } = useAppContext();
+  const { auth, catalog, isAdmin, isAuthenticated, likedTracks, logout, resolveBackendUrl } = useAppContext();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -20,6 +23,42 @@ export default function ProfilePage() {
         <p>{isAdmin ? 'Admin access is active.' : isAuthenticated ? 'You are signed in as a listener.' : 'Sign in to start listening.'}</p>
       </div>
 
+      
+
+      <section className="content-block profile-simple__liked">
+        <SectionHeading
+          eyebrow="Your music"
+          title="Liked tracks"
+          description={
+            !isAuthenticated
+              ? 'Sign in to keep a personal list of liked tracks.'
+              : catalog.isLoading
+                ? 'Loading your saved tracks.'
+                : `${likedTracks.likedTracks.length} liked track${likedTracks.likedTracks.length === 1 ? '' : 's'} saved for this profile.`
+          }
+          action={
+            isAuthenticated ? (
+              <Link className="section-link" to="/tracks">
+                Browse tracks
+              </Link>
+            ) : null
+          }
+        />
+
+        {!isAuthenticated ? (
+          <EmptyStateCard title="Sign in required" description="Liked tracks are saved separately for each user." />
+        ) : catalog.isLoading ? (
+          <EmptyStateCard title="Loading liked tracks" description="Your saved tracks are syncing with the catalog." />
+        ) : likedTracks.likedTracks.length ? (
+          <div className="track-list">
+            {likedTracks.likedTracks.map((track) => (
+              <TrackCard key={track.id} resolveBackendUrl={resolveBackendUrl} track={track} />
+            ))}
+          </div>
+        ) : (
+          <EmptyStateCard title="No liked tracks yet" description="Tap the heart on any track to save it here." />
+        )}
+      </section>
       <div className="profile-simple__bottom">
         {isAuthenticated ? (
           <button className="button button-primary" onClick={handleLogout} type="button">
