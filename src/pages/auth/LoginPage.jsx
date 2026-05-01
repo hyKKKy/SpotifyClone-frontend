@@ -102,8 +102,6 @@ export default function LoginPage() {
               Create account
             </Link>
           </div>
-
-          <p className="helper-copy">{isAdmin ? 'Admin access is active for this session.' : 'Regular users stay in browse-only mode.'}</p>
         </form>
       </div>
     </section>

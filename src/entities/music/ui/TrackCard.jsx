@@ -7,6 +7,7 @@ export default function TrackCard({ action = null, resolveBackendUrl, track }) {
   const canPlay = Boolean(track.url && resolveBackendUrl(track.url));
   const isActive = String(player.currentTrack?.id) === String(track.id);
   const isLiked = likedTracks.isTrackLiked(track.id);
+  const isLikePending = likedTracks.isTrackLikePending(track.id);
 
   return (
     <article className={isActive ? 'track-card track-card--active' : 'track-card'}>
@@ -26,7 +27,7 @@ export default function TrackCard({ action = null, resolveBackendUrl, track }) {
           aria-label={isLiked ? `Remove ${track.title} from liked tracks` : `Like ${track.title}`}
           aria-pressed={isLiked}
           className={isLiked ? 'track-card__likeButton track-card__likeButton--active' : 'track-card__likeButton'}
-          disabled={!isAuthenticated}
+          disabled={!isAuthenticated || isLikePending}
           onClick={() => likedTracks.toggleTrackLike(track)}
           title={isAuthenticated ? (isLiked ? 'Unlike track' : 'Like track') : 'Sign in to like tracks'}
           type="button"

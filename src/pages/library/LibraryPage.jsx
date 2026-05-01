@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { useAppContext } from '@shared/lib/app-context';
 import AlbumCard from '@entities/music/ui/AlbumCard';
 import ArtistCard from '@entities/music/ui/ArtistCard';
@@ -9,7 +8,7 @@ import '@shared/styles/listen-hero.css';
 import './LibraryPage.css';
 
 export default function LibraryPage() {
-  const { catalog, isAdmin, resolveBackendUrl } = useAppContext();
+  const { catalog, resolveBackendUrl } = useAppContext();
 
   return (
     <section className="music-page page-shell">

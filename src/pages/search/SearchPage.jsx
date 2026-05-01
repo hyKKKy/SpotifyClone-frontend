@@ -61,7 +61,6 @@ export default function SearchPage() {
               <SectionHeading
                 eyebrow="Albums"
                 title={`${results.albums.length} album${results.albums.length === 1 ? '' : 's'}`}
-                description="Album title, artist, and release date matches."
               />
               {results.albums.length ? (
                 <div className="album-wall">
@@ -78,7 +77,6 @@ export default function SearchPage() {
               <SectionHeading
                 eyebrow="Artists"
                 title={`${results.artists.length} artist${results.artists.length === 1 ? '' : 's'}`}
-                description="Artist name and release matches."
               />
               {results.artists.length ? (
                 <div className="artist-wall">
@@ -95,11 +93,6 @@ export default function SearchPage() {
               <SectionHeading
                 eyebrow="Tracks"
                 title={`${results.tracks.length} track${results.tracks.length === 1 ? '' : 's'}`}
-                description={
-                  isAuthenticated
-                    ? 'Track title, artist, album, and genre matches.'
-                    : 'Sign in to include protected tracks in search results.'
-                }
               />
               {results.tracks.length ? (
                 <div className="track-list">

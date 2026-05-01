@@ -7,7 +7,7 @@ import '@shared/styles/music-page.css';
 import './ProfilePage.css';
 
 export default function ProfilePage() {
-  const { auth, catalog, isAdmin, isAuthenticated, likedTracks, logout, resolveBackendUrl } = useAppContext();
+  const { auth, catalog, isAuthenticated, likedTracks, logout, resolveBackendUrl } = useAppContext();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -20,7 +20,6 @@ export default function ProfilePage() {
       <div className="profile-simple__greeting">
         <p className="eyebrow">Profile</p>
         <h2>{isAuthenticated ? `Hello, ${auth.userName}.` : 'Hello, guest.'}</h2>
-        <p>{isAdmin ? 'Admin access is active.' : isAuthenticated ? 'You are signed in as a listener.' : 'Sign in to start listening.'}</p>
       </div>
 
       
@@ -28,13 +27,11 @@ export default function ProfilePage() {
       <section className="content-block profile-simple__liked">
         <SectionHeading
           eyebrow="Your music"
-          title="Liked tracks"
+          title="Liked tracks: "
           description={
             !isAuthenticated
               ? 'Sign in to keep a personal list of liked tracks.'
               : catalog.isLoading
-                ? 'Loading your saved tracks.'
-                : `${likedTracks.likedTracks.length} liked track${likedTracks.likedTracks.length === 1 ? '' : 's'} saved for this profile.`
           }
           action={
             isAuthenticated ? (

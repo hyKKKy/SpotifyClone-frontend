@@ -34,7 +34,7 @@ export default function AppProvider({ children }) {
   const request = useApiRequest(auth.token, handleUnauthorized);
   const { catalog, refreshCatalog } = useCatalog(request);
   const player = usePlayer(catalog.tracks);
-  const likedTracks = useLikedTracks(auth, catalog.tracks);
+  const likedTracks = useLikedTracks(auth, catalog.tracks, request);
 
   const login = useCallback(
     async ({ login: userLogin, password }) => {
