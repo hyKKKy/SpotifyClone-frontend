@@ -5,7 +5,7 @@ import '@shared/styles/music-page.css';
 import './AuthPages.css';
 
 export default function LoginPage() {
-  const { isAdmin, login } = useAppContext();
+  const { login } = useAppContext();
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
