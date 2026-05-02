@@ -16,7 +16,6 @@ export default function LibraryPage() {
         <div className="listen-hero__copy">
           <p className="eyebrow">Browse</p>
           <h2>Albums and artists, together in one library view.</h2>
-          <p>Move between fresh releases and the artists behind them without leaving the page.</p>
         </div>
       </div>
 

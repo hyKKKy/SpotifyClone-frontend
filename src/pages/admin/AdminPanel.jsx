@@ -12,16 +12,12 @@ export default function AdminPanel() {
       <div className="listen-hero listen-hero--compact">
         <div className="listen-hero__copy">
           <p className="eyebrow">Studio</p>
-          <h2>Admin publishing stays separate from the listener experience.</h2>
-          <p>
-            Use this studio area to add albums, upload tracks, and manage internal upload flows.
-          </p>
+          <h2>Welcome to Admin Panel!</h2>
         </div>
 
         <div className="surface-card hero-summary">
           <p className="eyebrow">Current library</p>
           <strong>{catalog.albums.length} albums</strong>
-          <span>{catalog.artists.length} artists currently visible in the listener app.</span>
         </div>
       </div>
 
