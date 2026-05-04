@@ -5,7 +5,7 @@ import '@shared/styles/music-page.css';
 import './AuthPages.css';
 
 export default function LoginPage() {
-  const { isAdmin, login } = useAppContext();
+  const { login } = useAppContext();
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -102,8 +102,6 @@ export default function LoginPage() {
               Create account
             </Link>
           </div>
-
-          <p className="helper-copy">{isAdmin ? 'Admin access is active for this session.' : 'Regular users stay in browse-only mode.'}</p>
         </form>
       </div>
     </section>

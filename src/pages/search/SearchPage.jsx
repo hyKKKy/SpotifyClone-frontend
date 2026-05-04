@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAppContext } from '@shared/lib/app-context';
+import { normalizeAlbums, normalizeTracks } from '@entities/music/model/catalog';
 import AlbumCard from '@entities/music/ui/AlbumCard';
 import ArtistCard from '@entities/music/ui/ArtistCard';
 import EmptyStateCard from '@shared/ui/EmptyStateCard';
@@ -9,39 +10,81 @@ import TrackCard from '@entities/music/ui/TrackCard';
 import '@shared/styles/music-page.css';
 import './SearchPage.css';
 
-function matchesQuery(values, query) {
-  return values.some((value) => String(value || '').toLowerCase().includes(query));
+const EMPTY_RESULTS = {
+  albums: [],
+  artists: [],
+  tracks: [],
+};
+
+function normalizeArtists(items = []) {
+  return [...(Array.isArray(items) ? items : [])]
+    .map((item, index) => ({
+      albumCount: item.albumCount ?? item.AlbumCount ?? 0,
+      coverUrl: item.coverUrl || item.CoverUrl || '',
+      id: item.id || item.Id || index,
+      latestRelease: item.latestRelease || item.LatestRelease || 'Unknown release date',
+      name: item.name || item.Name || 'Unknown artist',
+    }))
+    .sort((left, right) => right.albumCount - left.albumCount || left.name.localeCompare(right.name));
 }
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
-  const { catalog, isAuthenticated, resolveBackendUrl, searchQuery } = useAppContext();
+  const { request, resolveBackendUrl, searchQuery } = useAppContext();
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [results, setResults] = useState(EMPTY_RESULTS);
   const activeQuery = (searchParams.get('q') || searchQuery).trim();
-  const normalizedQuery = activeQuery.toLowerCase();
 
-  const results = useMemo(() => {
-    if (!normalizedQuery) {
-      return {
-        albums: [],
-        artists: [],
-        tracks: [],
-      };
+  useEffect(() => {
+    if (!activeQuery) {
+      setError('');
+      setIsLoading(false);
+      setResults(EMPTY_RESULTS);
+      return undefined;
     }
 
-    return {
-      albums: catalog.albums.filter((album) =>
-        matchesQuery([album.title, album.artist, album.releaseDate, album.releaseYear], normalizedQuery),
-      ),
-      artists: catalog.artists.filter((artist) =>
-        matchesQuery([artist.name, artist.latestRelease, artist.albumCount], normalizedQuery),
-      ),
-      tracks: catalog.tracks.filter((track) =>
-        matchesQuery([track.title, track.artist, track.albumTitle, track.genreName], normalizedQuery),
-      ),
-    };
-  }, [catalog.albums, catalog.artists, catalog.tracks, normalizedQuery]);
+    let isActive = true;
 
-  const totalResults = results.albums.length + results.artists.length + results.tracks.length;
+    const loadSearchResults = async () => {
+      setError('');
+      setIsLoading(true);
+
+      try {
+        const payload = await request(`/api/search?q=${encodeURIComponent(activeQuery)}`);
+
+        if (!isActive) {
+          return;
+        }
+
+        setResults({
+          albums: normalizeAlbums(payload.albums),
+          artists: normalizeArtists(payload.artists),
+          tracks: normalizeTracks(payload.tracks),
+        });
+      } catch (requestError) {
+        if (isActive) {
+          setError(requestError.message || 'Search failed.');
+          setResults(EMPTY_RESULTS);
+        }
+      } finally {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadSearchResults();
+
+    return () => {
+      isActive = false;
+    };
+  }, [activeQuery, request]);
+
+  const totalResults = useMemo(
+    () => results.albums.length + results.artists.length + results.tracks.length,
+    [results],
+  );
 
   return (
     <section className="music-page page-shell">
@@ -51,8 +94,10 @@ export default function SearchPage() {
           title={activeQuery ? `Results for "${activeQuery}"` : 'Search your library'}
         />
 
-        {catalog.isLoading ? (
-          <EmptyStateCard title="Searching" description="The catalog is loading before results can be shown." />
+        {isLoading ? (
+          <EmptyStateCard title="Searching" description="The backend is searching the music catalog." />
+        ) : error ? (
+          <EmptyStateCard title="Search unavailable" description={error} />
         ) : !activeQuery ? (
           <EmptyStateCard title="No search yet" description="Use the search field above to find music in the catalog." />
         ) : totalResults ? (
@@ -61,7 +106,6 @@ export default function SearchPage() {
               <SectionHeading
                 eyebrow="Albums"
                 title={`${results.albums.length} album${results.albums.length === 1 ? '' : 's'}`}
-                description="Album title, artist, and release date matches."
               />
               {results.albums.length ? (
                 <div className="album-wall">
@@ -78,7 +122,6 @@ export default function SearchPage() {
               <SectionHeading
                 eyebrow="Artists"
                 title={`${results.artists.length} artist${results.artists.length === 1 ? '' : 's'}`}
-                description="Artist name and release matches."
               />
               {results.artists.length ? (
                 <div className="artist-wall">
@@ -95,11 +138,6 @@ export default function SearchPage() {
               <SectionHeading
                 eyebrow="Tracks"
                 title={`${results.tracks.length} track${results.tracks.length === 1 ? '' : 's'}`}
-                description={
-                  isAuthenticated
-                    ? 'Track title, artist, album, and genre matches.'
-                    : 'Sign in to include protected tracks in search results.'
-                }
               />
               {results.tracks.length ? (
                 <div className="track-list">

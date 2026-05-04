@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { useAppContext } from '@shared/lib/app-context';
 import AlbumCard from '@entities/music/ui/AlbumCard';
 import ArtistCard from '@entities/music/ui/ArtistCard';
@@ -9,7 +8,7 @@ import '@shared/styles/listen-hero.css';
 import './LibraryPage.css';
 
 export default function LibraryPage() {
-  const { catalog, isAdmin, resolveBackendUrl } = useAppContext();
+  const { catalog, resolveBackendUrl } = useAppContext();
 
   return (
     <section className="music-page page-shell">
@@ -17,7 +16,6 @@ export default function LibraryPage() {
         <div className="listen-hero__copy">
           <p className="eyebrow">Browse</p>
           <h2>Albums and artists, together in one library view.</h2>
-          <p>Move between fresh releases and the artists behind them without leaving the page.</p>
         </div>
       </div>
 

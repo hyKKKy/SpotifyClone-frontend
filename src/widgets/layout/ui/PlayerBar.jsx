@@ -45,6 +45,7 @@ export default function PlayerBar() {
     [currentTrack, resolveBackendUrl],
   );
   const isCurrentTrackLiked = currentTrack ? likedTracks.isTrackLiked(currentTrack.id) : false;
+  const isCurrentTrackLikePending = currentTrack ? likedTracks.isTrackLikePending(currentTrack.id) : false;
   const progressPercent = duration ? Math.min(100, (currentTime / duration) * 100) : 0;
 
   useEffect(() => {
@@ -140,7 +141,7 @@ export default function PlayerBar() {
           className={
             isCurrentTrackLiked ? 'player-bar__like player-bar__like--active' : 'player-bar__like'
           }
-          disabled={!isAuthenticated || !currentTrack}
+          disabled={!isAuthenticated || !currentTrack || isCurrentTrackLikePending}
           onClick={() => likedTracks.toggleTrackLike(currentTrack)}
           title={
             !isAuthenticated

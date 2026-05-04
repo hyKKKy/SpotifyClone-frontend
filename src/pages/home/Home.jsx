@@ -20,7 +20,6 @@ export default function Home() {
         <div className="listen-hero__copy">
           <p className="eyebrow">{isAuthenticated ? 'Welcome back' : 'Start listening'}</p>
           <h2>{isAuthenticated ? `Good evening, ${auth.userName}.` : 'Music for every mood.'}</h2>
-          <p>Jump into fresh releases, revisit familiar artists, and keep the music moving.</p>
           <div className="button-row">
             <Link className="button button-primary" to="/browse">
               Browse library
@@ -45,7 +44,6 @@ export default function Home() {
         <SectionHeading
           eyebrow="Fresh picks"
           title="Latest albums"
-          description="Start here with the newest releases in your collection."
           action={<Link className="section-link" to="/albums">See all albums</Link>}
         />
 
@@ -66,7 +64,6 @@ export default function Home() {
         <SectionHeading
           eyebrow="Artists"
           title="Artists in your rotation"
-          description="The voices showing up across your library right now."
           action={<Link className="section-link" to="/artists">See all artists</Link>}
         />
 
